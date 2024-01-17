@@ -37,14 +37,22 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 	let queryLog = ``;
 
 	proto = handleApiCalls("leaderboard")
+	try {
 	var client = new proto.MaimaiLeaderboard(Secrets.MYTHOS,grpc.credentials.createSsl());
-	
+	} catch {
+		msg.reply("Oops! The administrator has not set up Mythos API support yet, please contact your local dev!")
+		return;
+	}
 	const requestMetadata = new grpc.Metadata();
 	requestMetadata.add('Authorization', `${Secrets.MYTHOS_API}`)
 
 	client.GetRating({"":""}, requestMetadata, async function(err, response) {
+		try {
 		leaderboard = response.entries
-	
+		} catch {
+			msg.reply("Oops! The administrator has not set up Mythos API support yet, please contact your local dev!")
+			return;
+		}
 
 		
 	if (cache == null){
