@@ -68,7 +68,8 @@ module.exports.Commands = {
 	SETTAGS: {prefix: 'settags', hidden: true, admin_only: true, log_string: "CMD_SETTAGS", example_args: " <tags>", details: "**Developer Only**, Sets the song's tags"},
 	STATUS: {prefix: 'status', hidden: true, admin_only: true, log_string: "CMD_STATUS", example_args: " <@user> <status>", details: "**Developer Only**, Sets a user's kumakult status"},
 	CREDITS: {prefix: 'credits', hidden: true, admin_only: true, log_string: "CMD_CREDITS", example_args: " <user> <quantity>", details: "**Developer Only**, gives credits to users."},
-	BOOK: {prefix: 'book', hidden: true, admin_only: false, log_string: "CMD_BOOK", example_args: " <time>", details: "**Kumakult Only**, schedules for the cab."}
+	BOOK: {prefix: 'book', hidden: true, admin_only: false, log_string: "CMD_BOOK", example_args: " <time>", details: "**Kumakult Only**, schedules for the cab."},
+	LEADERBOARD: {prefix: 'leaderboard', hidden: false, admin_only: false, log_string: "CMD_LEADERBOARD", example_args: "", details: "Displays Mythos Leaderboards"},
 };
 
 module.exports.Difficulties = {
