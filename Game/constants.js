@@ -1,5 +1,5 @@
 module.exports.Constants = {
-	DeveloperId: "148332220120039424",
+	DeveloperId: ["148332220120039424", "242102347390517248"],
 	Prefix: "m!",
 	ImageDirectory: "img/cover/",
 	FooterMessage: "🦧power - 🐬tech - 🦑intelligence - 🐯stamina - 🐉trills - 🦝spins",

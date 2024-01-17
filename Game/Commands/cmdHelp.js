@@ -64,6 +64,7 @@ function cmdHelp(game, msg, increment = 0, cache = null){
 			description = "### Credits \n";
 			description += "Thank you to those that helped created me directly and indirectly.\n";
 			description += "- \`wubbo.\` -  main developer. \n";
+			description += "- \`Chara_\` -  API developer. \n";
 			description += "- \`Zetaraku\` - indirect help with the maimai database.\n";
 			description += "- \`maiLvChiho\` - indirect help with the song constants.\n"
 			description += "- \`dbkjake\` - assistance with tags for lv14 - 14+ charts.\n";
