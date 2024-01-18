@@ -1,7 +1,7 @@
 const { Constants } = require("./../constants.js");
 
 function getIsDeveloper(msg){
-	if (msg.member.user.id == Constants.DeveloperId){
+	if (Constants.DeveloperId.includes(msg.member.user.id)){
 		return true;
 	}
 	return false;
