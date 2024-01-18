@@ -3,6 +3,7 @@
     "@google-cloud/local-auth": "^2.1.0",
     "@google-cloud/translate": "^8.0.2",
     "@google-cloud/vision": "^4.0.1",
+    "@grpc/grpc-js": "^1.9.13",
     "axios": "^1.5.0",
     "canvas": "^2.11.2",
     "discord.js": "^14.12.1",
