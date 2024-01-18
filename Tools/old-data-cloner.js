@@ -14,19 +14,16 @@ const Secrets = require("./../Game/Secrets/secrets.js");
 const {google} = require('googleapis');
 
 const { JWT } = require('google-auth-library');
-const KEYFILE = path.join(process.cwd(), './Tools/maimai-db-ffdd411adc72.json');
-const TOKEN_PATH = path.join(process.cwd(), './Tools/token.json');
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
 const google = new JWT({
-	keyFile: KEYFILE,
-	scopes: SCOPES,
+	keyFile: Secrets.TOKEN_KEYFILE,
+	scopes: Secrets.SCOPES,
 });
 
 
 const { TranslationServiceClient } = require('@google-cloud/translate').v3;
-const projectId = 'maimai-db'; // Replace with your project ID
+const projectId = 'maimai-db';
 const translationClient = new TranslationServiceClient({
-  keyFile: KEYFILE,
+  keyFile: Secrets.TOKEN_KEYFILE,
 });
 
 async function getTranslatedText(text) {

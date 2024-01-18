@@ -12,9 +12,6 @@ const Secrets = require("./../Secrets/secrets.js");
 const { SearchArgs, Constants, Commands, GameVersion, Locale, Ranks } = require("./../constants.js");
 const { IntentsBitField, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ActivityType } = require('discord.js');
 
-
-
-
 async function cmdLeaderboard(game, msg, increment = 0, cache = null){
 	let userParams = null;
 	if (cache == null){
@@ -27,53 +24,52 @@ async function cmdLeaderboard(game, msg, increment = 0, cache = null){
 	if (userParams.users.length == 0){
 		await displayMythosLeaderboardsAsync(game, msg, cache, userParams, increment);
 	} else {
-		await displayUserStatsAsync(game, msg, cache, userParams, increment);
+		// TODO: implement this after mythos has user profiles
+		// await displayUserStatsAsync(game, msg, cache, userParams, increment);
+
+		await displayMythosLeaderboardsAsync(game, msg, cache, userParams, increment);
 	}
 }
 
+async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, increment = 0) {
+	// If cache is not null, just send a message. Otherwise request mythos API data.
+	if (cache != null){
+		handleLeaderboardsMessage(game, msg, cache, userParams, increment);
+		return;
+	}
 
+	proto = handleApiCalls("leaderboard");
 
-async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, increment = 0){
-	let queryLog = ``;
-
-	proto = handleApiCalls("leaderboard")
 	try {
-	var client = new proto.MaimaiLeaderboard(Secrets.MYTHOS,grpc.credentials.createSsl());
+		var client = new proto.MaimaiLeaderboard(Secrets.MYTHOS, grpc.credentials.createSsl());
 	} catch {
 		msg.reply("Oops! The administrator has not set up Mythos API support yet, please contact your local dev!")
 		return;
 	}
+
 	const requestMetadata = new grpc.Metadata();
 	requestMetadata.add('Authorization', `${Secrets.MYTHOS_API}`)
-
 	client.GetRating({"":""}, requestMetadata, async function(err, response) {
 		try {
-		leaderboard = response.entries
+			leaderboard = response.entries
 		} catch {
 			msg.reply("Oops! The administrator has not set up Mythos API support yet, please contact your local dev!")
 			return;
 		}
 
-		
-	if (cache == null){
 		cache = new SearchArgs();
-		cache.command = Commands.STATS;
+		cache.command = Commands.LEADERBOARD;
 		cache.page = 0;
 		cache.game_version = userParams.version.id;
 		cache.diff_version = userParams.version.id;
 		cache.userParams = userParams;
 		game.requestsCache[msg.author.id] = cache;
 
-
-	
 		let users = [];
 		for (i = 0; i < leaderboard.length; i++){
 			users.push(await leaderboard[i])
 		}
 
-		
-
-		handleSetPresence(game.discord, users.length);
 		let cached_users = [];
 		for (var i = 0; i < users.length; i++){
 			let user = users[i];
@@ -89,8 +85,12 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 		if (cache.users == null){
 			cache.users = [];
 		}
-	}
+		handleLeaderboardsMessage(game, msg, cache, userParams, increment);
+	});
+}
 
+function handleLeaderboardsMessage(game, msg, cache, userParams, increment){
+	let queryLog = ``;
 	let last_page = Math.floor(cache.users.length / Constants.DefaultPageSize);
 	if (cache.users.length % Constants.DefaultPageSize == 0 && cache.users.length > 0){
 		last_page --;
@@ -101,7 +101,7 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 	let msgTitle = `🏅 - Mythos Rating Leaderboards`;
 	let description = ``;
 	let userCount = 0;
-	
+
 		for (var i = 0; i < Constants.DefaultPageSize; i++)
 		{
 			var index = i + cache.page * Constants.DefaultPageSize;
@@ -113,14 +113,14 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 			let rating_cur = user.player_rating;
 			userCount++;
 
-			
-
 			let ratingLabel = getRatingLabel(rating_cur);
 			let submitted = user.scores_submitted == null ? 0 : user.scores_submitted;
 			description += `${cache.page * Constants.DefaultPageSize + i + 1}. \`${cache.cached_users[user.user_name]}\`  Mythos Rating: ${ratingLabel.label}\n`;
 		}
 
-		let pre_description = `Viewing the current Mythos leaderboards. Type \`${Constants.Prefix}stats <@user>\` for a more detailed summary of that user. (UNFINISHED)\n`;
+		// let pre_description = `Viewing the current Mythos leaderboards. Type \`${Constants.Prefix}stats <@user>\` for a more detailed summary of that user. (UNFINISHED)\n`;
+		let pre_description = `Viewing the current Mythos leaderboards. This feature is still under development. \n`;
+
 		pre_description += `- Displaying \`${userCount} user${userCount === 1 ? '' : 's'}\` out of ${cache.users.length} result${cache.users.length === 1 ? '' : 's'}\n`;
 
 		// if (cache.game_version == game.game_version){
@@ -130,9 +130,9 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 			pre_description += `- Version: \`FESTiVAL PLUS\`\n`;
 		}
 
-		pre_description += `- Leaderboards: \`${getTagsStringified(Locale, userParams.locale.id)}\`\n\n`;
+		pre_description += `\n`;
 		description = `${pre_description}${description}`;
-	
+
 
 	const embed = new EmbedBuilder()
 		.setTitle(msgTitle) // TODO: CLEAN
@@ -150,7 +150,6 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 	} else {
 		msg.edit(content);
 	}
-});
 }
 
 module.exports = cmdLeaderboard;
