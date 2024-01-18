@@ -134,8 +134,12 @@ discord.on("guildCreate", (guild) => {
 });
 
 async function privateMessage(str){
-  let dev = await discord.users.fetch('242102347390517248');
-  dev.send(str);
+	try {
+		let dev = await discord.users.fetch('148332220120039424');
+	  dev.send(str);
+	} catch {
+		// Ignored
+	}
 }
 
 // Bot Got Kicked
