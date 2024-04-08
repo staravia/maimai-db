@@ -49,44 +49,54 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 
 	const requestMetadata = new grpc.Metadata();
 	requestMetadata.add('Authorization', `${Secrets.MYTHOS_API}`)
-	client.GetRating({"":""}, requestMetadata, async function(err, response) {
-		try {
-			leaderboard = response.entries
-		} catch {
-			msg.reply("Oops! The administrator has not set up Mythos API support yet, please contact your local dev!")
-			return;
-		}
 
-		cache = new SearchArgs();
-		cache.command = Commands.LEADERBOARD;
-		cache.page = 0;
-		cache.game_version = userParams.version.id;
-		cache.diff_version = userParams.version.id;
-		cache.userParams = userParams;
-		game.requestsCache[msg.author.id] = cache;
 
-		let users = [];
-		for (i = 0; i < leaderboard.length; i++){
-			users.push(await leaderboard[i])
-		}
-
-		let cached_users = [];
-		for (var i = 0; i < users.length; i++){
-			let user = users[i];
-			if (cached_users[user.user_name] == undefined){
-				let username = user.user_name
-				cached_users[user.user_name] = username;
-			}
-		}
-
-		cache.users = users;
-		cache.cached_users = cached_users;
-
-		if (cache.users == null){
-			cache.users = [];
-		}
-		handleLeaderboardsMessage(game, msg, cache, userParams, increment);
+	var response = await new Promise((resolve, reject) => {
+	    client.GetRating({ "": "" }, requestMetadata, function(err, res) {
+	        if (!err) {
+	            resolve(res);
+	        } else {
+	            reject(err);
+	        }
+	    });
 	});
+
+	if (!response){
+		msg.reply("Oops! The administrator has not set up Mythos API support yet, please contact your local dev!")
+		return;
+	}
+
+	// client.GetRating({"":""}, requestMetadata, async function(err, response) {
+	leaderboard = response.entries
+	cache = new SearchArgs();
+	cache.command = Commands.LEADERBOARD;
+	cache.page = 0;
+	cache.game_version = userParams.version.id;
+	cache.diff_version = userParams.version.id;
+	cache.userParams = userParams;
+	game.requestsCache[msg.author.id] = cache;
+
+	let users = [];
+	for (i = 0; i < leaderboard.length; i++){
+		users.push(await leaderboard[i])
+	}
+
+	let cached_users = [];
+	for (var i = 0; i < users.length; i++){
+		let user = users[i];
+		if (cached_users[user.user_name] == undefined){
+			let username = user.user_name
+			cached_users[user.user_name] = username;
+		}
+	}
+
+	cache.users = users;
+	cache.cached_users = cached_users;
+
+	if (cache.users == null){
+		cache.users = [];
+	}
+	handleLeaderboardsMessage(game, msg, cache, userParams, increment);
 }
 
 function handleLeaderboardsMessage(game, msg, cache, userParams, increment){
