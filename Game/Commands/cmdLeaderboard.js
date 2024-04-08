@@ -1,4 +1,3 @@
-
 const getRatingLabel = require("./../Helpers/getRatingLabel.js");
 const getTagsStringified = require("./../Helpers/getTagsStringified.js");
 const getSearchArguments = require("./../Helpers/getSearchArguments.js");
@@ -11,6 +10,9 @@ const grpc = require('@grpc/grpc-js');
 const Secrets = require("./../Secrets/secrets.js");
 const { SearchArgs, Constants, Commands, GameVersion, Locale, Ranks } = require("./../constants.js");
 const { IntentsBitField, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, ActivityType } = require('discord.js');
+
+let initialized = false;
+let client = null;
 
 async function cmdLeaderboard(game, msg, increment = 0, cache = null){
 	let userParams = null;
@@ -31,42 +33,48 @@ async function cmdLeaderboard(game, msg, increment = 0, cache = null){
 	}
 }
 
+function handleInitialization(){
+	if (initialized)
+		return;
+
+	initialized = true;
+	const proto = handleApiCalls("leaderboard");
+
+	try {
+		client = new proto.MaimaiLeaderboard(Secrets.MYTHOS, grpc.credentials.createSsl());
+	} catch {
+		msg.reply("The administrator has not set up Mythos API support.")
+		return;
+	}
+}
+
 async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, increment = 0) {
-	// If cache is not null, just send a message. Otherwise request mythos API data.
-	if (cache != null){
+	if (cache != null) {
 		handleLeaderboardsMessage(game, msg, cache, userParams, increment);
 		return;
 	}
 
-	proto = handleApiCalls("leaderboard");
-
-	try {
-		var client = new proto.MaimaiLeaderboard(Secrets.MYTHOS, grpc.credentials.createSsl());
-	} catch {
-		msg.reply("Oops! The administrator has not set up Mythos API support yet, please contact your local dev!")
-		return;
-	}
+	// Is there better way to do this?
+	handleInitialization();
 
 	const requestMetadata = new grpc.Metadata();
 	requestMetadata.add('Authorization', `${Secrets.MYTHOS_API}`)
 
-
 	var response = await new Promise((resolve, reject) => {
-	    client.GetRating({ "": "" }, requestMetadata, function(err, res) {
-	        if (!err) {
-	            resolve(res);
-	        } else {
-	            reject(err);
-	        }
-	    });
+		client.GetRating({ "": "" }, requestMetadata, function(err, res) {
+			if (!err) {
+				resolve(res);
+			} else {
+				reject(err);
+      }
+    });
 	});
 
 	if (!response){
-		msg.reply("Oops! The administrator has not set up Mythos API support yet, please contact your local dev!")
+		msg.reply("There was an error connecting to Mythos API.")
 		return;
 	}
 
-	// client.GetRating({"":""}, requestMetadata, async function(err, response) {
 	leaderboard = response.entries
 	cache = new SearchArgs();
 	cache.command = Commands.LEADERBOARD;
@@ -96,6 +104,7 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 	if (cache.users == null){
 		cache.users = [];
 	}
+
 	handleLeaderboardsMessage(game, msg, cache, userParams, increment);
 }
 
