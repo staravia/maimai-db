@@ -7,6 +7,10 @@ async function getAllChartsAsync(game, msg, args, is_score = false){
 	let lvl_name = ``;
 	let rating_name = ``;
 	switch (args.diff_version) {
+		case GameVersion.BUDDIES.id:
+			lvl_name = GameVersion.BUDDIES.const_label;
+			rating_name = GameVersion.BUDDIES.rating_label;
+			break;
 		case GameVersion.FESTIVALPLUS.id:
 			lvl_name = GameVersion.FESTIVALPLUS.const_label;
 			rating_name = GameVersion.FESTIVALPLUS.rating_label;
@@ -24,8 +28,8 @@ async function getAllChartsAsync(game, msg, args, is_score = false){
 			rating_name = GameVersion.UNIVERSE.rating_label;
 			break;
 		default:
-			lvl_name = GameVersion.BUDDIES.const_label;
-			rating_name = GameVersion.BUDDIES.rating_label;
+			lvl_name = GameVersion.BUDDIESPLUS.const_label;
+			rating_name = GameVersion.BUDDIESPLUS.rating_label;
 			break;
 	}
 

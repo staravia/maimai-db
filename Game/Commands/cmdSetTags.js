@@ -71,17 +71,17 @@ async function cmdSetTags(game, msg){
 	}
 
 	const query = `INSERT INTO charts
-		(hash, dx_version, is_locked, is_international, is_china, title, artist, notes_designer, category, game_version, difficulty, const_uni, const_unip, const_fes, const_fesp, const_bud, count_taps, count_holds, count_slides, count_touch, count_break, count_total, tags, bpm, image_file, search_title)
+		(hash, dx_version, is_locked, is_international, is_china, title, artist, notes_designer, category, game_version, difficulty, const_uni, const_unip, const_fes, const_fesp, const_bud, const_budp, count_taps, count_holds, count_slides, count_touch, count_break, count_total, tags, bpm, image_file, search_title)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
 		ON CONFLICT(hash)
 		DO UPDATE SET
-		dx_version = ?, is_locked = ?, is_international = ?, is_china = ?, title = ?, artist = ?, notes_designer = ?, category = ?, game_version = ?, difficulty = ?, const_uni = ?, const_unip = ?, const_fes = ?, const_fesp = ?, const_bud = ?, count_taps = ?, count_holds = ?, count_slides = ?, count_touch = ?, count_break = ?, count_total = ?, tags = ?, bpm = ?, image_file = ?, search_title = ?
+		dx_version = ?, is_locked = ?, is_international = ?, is_china = ?, title = ?, artist = ?, notes_designer = ?, category = ?, game_version = ?, difficulty = ?, const_uni = ?, const_unip = ?, const_fes = ?, const_fesp = ?, const_bud = ?, const_budp = ?, count_taps = ?, count_holds = ?, count_slides = ?, count_touch = ?, count_break = ?, count_total = ?, tags = ?, bpm = ?, image_file = ?, search_title = ?
 		`;
 
-	let params = [chart.hash, chart.dx_version, chart.is_locked, chart.is_international, chart.is_china, chart.title, chart.artist, chart.notes_designer, chart.category, chart.game_version, chart.difficulty, chart.const_uni, chart.const_unip, chart.const_fes, chart.const_fesp, chart.const_bud, chart.count_taps, chart.count_holds, chart.count_slides, chart.count_touch, chart.count_break, chart.count_total, tags_id, chart.bpm, chart.image_file, chart.search_title,
+	let params = [chart.hash, chart.dx_version, chart.is_locked, chart.is_international, chart.is_china, chart.title, chart.artist, chart.notes_designer, chart.category, chart.game_version, chart.difficulty, chart.const_uni, chart.const_unip, chart.const_fes, chart.const_fesp, chart.const_bud, chart.const_budp, chart.count_taps, chart.count_holds, chart.count_slides, chart.count_touch, chart.count_break, chart.count_total, tags_id, chart.bpm, chart.image_file, chart.search_title,
 
-	chart.dx_version, chart.is_locked, chart.is_international, chart.is_china, chart.title, chart.artist, chart.notes_designer, chart.category, chart.game_version, chart.difficulty, chart.const_uni, chart.const_unip, chart.const_fes, chart.const_fesp, chart.const_bud, chart.count_taps, chart.count_holds, chart.count_slides, chart.count_touch, chart.count_break, chart.count_total, tags_id, chart.bpm, chart.image_file, chart.search_title];
+	chart.dx_version, chart.is_locked, chart.is_international, chart.is_china, chart.title, chart.artist, chart.notes_designer, chart.category, chart.game_version, chart.difficulty, chart.const_uni, chart.const_unip, chart.const_fes, chart.const_fesp, chart.const_bud, chart.const_budp, chart.count_taps, chart.count_holds, chart.count_slides, chart.count_touch, chart.count_break, chart.count_total, tags_id, chart.bpm, chart.image_file, chart.search_title];
 
 	let queryLog = getDbLogString(query, params, Commands.ADD.log_string);
 	let fail = false;
@@ -131,7 +131,7 @@ async function cmdSetTags(game, msg){
 	let row_index = 0;
   response.data.values.forEach(row => {
     try {
-      const [id, image_file, title, artist, version, category, dx, difficulty, international, china, locked, uni, unip, fes, fesp, bud, power, tech, intelligence, stamina, trills, spins, distribution, bpm, charter, search_title] = row;
+      const [id, image_file, title, artist, version, category, dx, difficulty, international, china, locked, uni, unip, fes, fesp, bud, budp, power, tech, intelligence, stamina, trills, spins, distribution, bpm, charter, search_title] = row;
       if (row != null && id != undefined && image_file != undefined && search_title != undefined) {
         // const imagefile = parseImageFile(image_file);
         const hash = Crypto.createHash('md5').update(`${title}-${dx}-${difficulty}`);
@@ -155,6 +155,7 @@ async function cmdSetTags(game, msg){
           const_fes: parseFloat(fes),
           const_fesp: parseFloat(fesp),
           const_bud: parseFloat(bud),
+          const_budp: parseFloat(bud),
 					distribution: distribution,
 					notes_designer: charter,
           is_power: getParsedSheetsTag(power),
@@ -217,7 +218,7 @@ async function cmdSetTags(game, msg){
 
 
 		let data = charts[row_index];
-		let result = [  data.id, data.image_file, data.title, data.artist, data.version, data.category, data.dx, data.difficulty, data.international, data.china, data.locked, data.uni, data.unip, data.fes, data.fesp, data.bud, result_power, result_tech, result_intelligence, result_stamina, result_trills, result_spins, data.distribution, data.bpm, data.notes_designer, data.search_title ];
+		let result = [  data.id, data.image_file, data.title, data.artist, data.version, data.category, data.dx, data.difficulty, data.international, data.china, data.locked, data.uni, data.unip, data.fes, data.fesp, data.bud, data.budp, result_power, result_tech, result_intelligence, result_stamina, result_trills, result_spins, data.distribution, data.bpm, data.notes_designer, data.search_title ];
 
 		console.log(`[CMD_SETTAGS]: Updating Google Sheets...`);
 		await sheets.spreadsheets.values.update({

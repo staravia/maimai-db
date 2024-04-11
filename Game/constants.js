@@ -1,6 +1,6 @@
 module.exports.Constants = {
 	DeveloperId: ["148332220120039424", "242102347390517248"],
-	Prefix: "m!",
+	Prefix: "a!",
 	ImageDirectory: "img/cover/",
 	FooterMessage: "🦧power - 🐬tech - 🦑intelligence - 🐯stamina - 🐉trills - 🦝spins",
 	DefaultPageSize: 20,
@@ -69,7 +69,7 @@ module.exports.Commands = {
 	STATUS: {prefix: 'status', hidden: true, admin_only: true, log_string: "CMD_STATUS", example_args: " <@user> <status>", details: "**Developer Only**, Sets a user's kumakult status"},
 	CREDITS: {prefix: 'credits', hidden: true, admin_only: true, log_string: "CMD_CREDITS", example_args: " <user> <quantity>", details: "**Developer Only**, gives credits to users."},
 	BOOK: {prefix: 'book', hidden: true, admin_only: false, log_string: "CMD_BOOK", example_args: " <time>", details: "**Kumakult Only**, schedules for the cab."},
-	LEADERBOARD: {prefix: 'leaderboard', hidden: false, admin_only: false, log_string: "CMD_LEADERBOARD", example_args: "", details: "Displays Mythos Leaderboards"},
+	MYTHOS: {prefix: 'mythos', hidden: false, admin_only: false, log_string: "CMD_MYTHOS", example_args: "", details: "Displays Mythos Leaderboards"},
 };
 
 module.exports.Difficulties = {
@@ -146,7 +146,7 @@ module.exports.Ranks = {
 	LOWRAINBOW: { requirement: 15000, color: 0x8ff4aa, suffix: '🌈', label: 'rainbow'},
 	MIDRAINBOW: { requirement: 15500, color: 0x70d5f2, suffix: '🌈🌈', label: 'mid-rainbow'},
 	HIGHRAINBOW: { requirement: 16000, color: 0xbe8cde, suffix: '👺', label: 'high-rainbow'},
-	MAXRATING: { requirement: 16513, color: 0xe28dec, suffix: '👹', label: 'max-rating (fes)'}
+	PEAKRAINBOW: { requirement: 16450, color: 0xe28dec, suffix: '👹', label: 'peak-rainbow'}
 }
 
 module.exports.DxVersion = {
@@ -206,6 +206,7 @@ module.exports.GameVersion = {
 	FESTIVAL: {id: 2 ** 19, json_label: "舞萌DX 2023", label: "FESTiVAL", search_titles: ["festival", "fes", "fest"], const_label: "const_fes", rating_label: "rating_fes"},
 	FESTIVALPLUS: {id: 2 ** 20, json_label: "舞萌DX 2023", label: "FESTiVAL PLUS", search_titles: ["festival+", "festivalplus", "fesp", "fest+", "fes+", "fesplus"], const_label: "const_fesp", rating_label: "rating_fesp"},
 	BUDDIES: {id: 2 ** 21, json_label: "舞萌DX 2024", label: "BUDDiES", search_titles: ["buddies", "buds", "bud", "buddy"], const_label: "const_bud", rating_label: "rating_bud"},
+	BUDDIESPLUS: {id: 2 ** 22, json_label: "舞萌DX 2024", label: "BUDDiES PLUS", search_titles: ["buddiesplus", "budsplus", "budplus", "buddyplus", "buddies+", "buds+", "bud+", "buddy+"], const_label: "const_bud", rating_label: "rating_budp"},
 	UNTIL: {id: 2 ** 31, json_label: "", label: "Until", search_titles: ["until", "upto"] }
 };
 

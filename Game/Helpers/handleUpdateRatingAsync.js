@@ -45,7 +45,8 @@ async function handleUpdateRatingAsync(msg, game, user_id, game_version = null){
 		`${GameVersion.UNIVERSEPLUS.id}`,
 		`${GameVersion.FESTIVAL.id}`,
 		`${GameVersion.FESTIVALPLUS.id}`,
-		`${GameVersion.BUDDIES.id}`
+		`${GameVersion.BUDDIES.id}`,
+		`${GameVersion.BUDDIESPLUS.id}`
 	];
 
 	ratingStat[`${GameVersion.UNIVERSE.id}`] = {rating: 0, version_cur_count: 0, version_prev_count: 0, done: false, game_version: GameVersion.UNIVERSE.id};
@@ -53,6 +54,7 @@ async function handleUpdateRatingAsync(msg, game, user_id, game_version = null){
 	ratingStat[`${GameVersion.FESTIVAL.id}`] = {rating: 0, version_cur_count: 0, version_prev_count: 0, done: false, game_version: GameVersion.FESTIVAL.id};
 	ratingStat[`${GameVersion.FESTIVALPLUS.id}`] = {rating: 0, version_cur_count: 0, version_prev_count: 0, done: false, game_version: GameVersion.FESTIVALPLUS.id};
 	ratingStat[`${GameVersion.BUDDIES.id}`] = {rating: 0, version_cur_count: 0, version_prev_count: 0, done: false, game_version: GameVersion.BUDDIES.id};
+	ratingStat[`${GameVersion.BUDDIESPLUS.id}`] = {rating: 0, version_cur_count: 0, version_prev_count: 0, done: false, game_version: GameVersion.BUDDIESPLUS.id};
 
 	let scores_submitted = scores.length;
 	let count = 0;
@@ -83,6 +85,9 @@ async function handleUpdateRatingAsync(msg, game, user_id, game_version = null){
 				case GameVersion.BUDDIES.id:
 					rating = score.rating_bud;
 					break;
+				case GameVersion.BUDDIESPLUS.id:
+					rating = score.rating_budp;
+					break;
 				default:
 					break;
 			}
@@ -112,7 +117,7 @@ async function handleUpdateRatingAsync(msg, game, user_id, game_version = null){
 			}
 		}
 
-		if (ratingStat[`${GameVersion.UNIVERSE.id}`].done && ratingStat[`${GameVersion.UNIVERSEPLUS.id}`].done && ratingStat[`${GameVersion.FESTIVAL.id}`].done && ratingStat[`${GameVersion.FESTIVALPLUS.id}`].done && ratingStat[`${GameVersion.BUDDIES.id}`].done){
+		if (ratingStat[`${GameVersion.UNIVERSE.id}`].done && ratingStat[`${GameVersion.UNIVERSEPLUS.id}`].done && ratingStat[`${GameVersion.FESTIVAL.id}`].done && ratingStat[`${GameVersion.FESTIVALPLUS.id}`].done && ratingStat[`${GameVersion.BUDDIES.id}`].done && ratingStat[`${GameVersion.BUDDIESPLUS.id}`].done){
 			break;
 		}
 	}
@@ -121,19 +126,19 @@ async function handleUpdateRatingAsync(msg, game, user_id, game_version = null){
 	let ratingLabel = getRatingLabel(rating_cur);
 	let description = `Your db Rating (Top 35+15): ${ratingLabel.label}`;
 	query = `INSERT INTO users
-		(id, scores_submitted, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, count_uni, count_unip, count_fes, count_fesp, count_bud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(id) DO UPDATE SET scores_submitted = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, count_uni = ?, count_unip = ?, count_fes = ?, count_fesp = ?, count_bud = ?`;
+		(id, scores_submitted, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, count_uni, count_unip, count_fes, count_fesp, count_bud, count_budp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(id) DO UPDATE SET scores_submitted = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, rating_budp = ?, count_uni = ?, count_unip = ?, count_fes = ?, count_fesp = ?, count_bud = ?, count_budp = ?`;
 
 	params = [user_id, scores_submitted, ratingStat[GameVersion.UNIVERSE.id].rating, ratingStat[GameVersion.UNIVERSEPLUS.id].rating, ratingStat[GameVersion.FESTIVAL.id].rating, ratingStat[GameVersion.FESTIVALPLUS.id].rating,
-	ratingStat[GameVersion.BUDDIES.id].rating,
+	ratingStat[GameVersion.BUDDIES.id].rating, ratingStat[GameVersion.BUDDIESPLUS.id].rating,
 
 	ratingStat[GameVersion.UNIVERSE.id].version_cur_count, ratingStat[GameVersion.UNIVERSEPLUS.id].version_cur_count, ratingStat[GameVersion.FESTIVAL.id].version_cur_count, ratingStat[GameVersion.FESTIVALPLUS.id].version_cur_count,
-	ratingStat[GameVersion.BUDDIES.id].version_cur_count,
+	ratingStat[GameVersion.BUDDIES.id].version_cur_count, ratingStat[GameVersion.BUDDIESPLUS.id].version_cur_count,
 
-	scores_submitted,	ratingStat[GameVersion.UNIVERSE.id].rating, ratingStat[GameVersion.UNIVERSEPLUS.id].rating, ratingStat[GameVersion.FESTIVAL.id].rating, ratingStat[GameVersion.FESTIVALPLUS.id].rating, ratingStat[GameVersion.BUDDIES.id].rating,
+	scores_submitted,	ratingStat[GameVersion.UNIVERSE.id].rating, ratingStat[GameVersion.UNIVERSEPLUS.id].rating, ratingStat[GameVersion.FESTIVAL.id].rating, ratingStat[GameVersion.FESTIVALPLUS.id].rating, ratingStat[GameVersion.BUDDIES.id].rating, ratingStat[GameVersion.BUDDIESPLUS.id].rating,
 
 	ratingStat[GameVersion.UNIVERSE.id].version_cur_count, ratingStat[GameVersion.UNIVERSEPLUS.id].version_cur_count, ratingStat[GameVersion.FESTIVAL.id].version_cur_count, ratingStat[GameVersion.FESTIVALPLUS.id].version_cur_count,
-	ratingStat[GameVersion.BUDDIES.id].version_cur_count
+	ratingStat[GameVersion.BUDDIES.id].version_cur_count, ratingStat[GameVersion.BUDDIESPLUS.id].version_cur_count
 
 ];
 	queryLog += getDbLogString(query, params, "USER_SYNC");

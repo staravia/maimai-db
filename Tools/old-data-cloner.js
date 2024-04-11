@@ -3,15 +3,11 @@ const fs = require("fs").promises;
 const path = require('path');
 const process = require('process');
 const { Difficulties, Categories, DxVersion, GameVersion, Tags } = require("./../Game/constants.js");
-
-const Secrets = require("./../Game/Secrets/secrets.js");
 const Kuroshiro = require("kuroshiro").default;
 const KuromojiAnalyzer = require("kuroshiro-analyzer-kuromoji");
 const Sqlite3 = require("sqlite3");
 const Crypto = require("crypto");
 const Secrets = require("./../Game/Secrets/secrets.js");
-
-const {google} = require('googleapis');
 
 const { JWT } = require('google-auth-library');
 const google = new JWT({
@@ -715,9 +711,9 @@ function parseImageFile(str){
 async function computeCharts(){
   console.log("Getting charts from spreadsheet...");
   let prevCharts = await getChartsFromSpreadsheet();
-	let uniFesData = await getUniFesFromSpreadsheet();
+	// let uniFesData = await getUniFesFromSpreadsheet();
   console.log("Computing charts...");
-  await handleChartData(prevCharts, uniFesData);
+  // await handleChartData(prevCharts, uniFesData);
 }
 
 computeCharts();

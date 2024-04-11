@@ -72,10 +72,10 @@ async function updateScores(){
 
     scores.forEach((score, i) => {
       let query = `INSERT INTO scores
-        (hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT(hash) DO UPDATE SET user_id = ?, chart_hash = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, message_url = ?, date_unix = ?`;
+        (hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp,  message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(hash) DO UPDATE SET user_id = ?, chart_hash = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, rating_budp = ?, message_url = ?, date_unix = ?`;
 
-      let params = [score.hash, score.user_id, score.chart_hash, score.accuracy, score.rating_uni, score.rating_unip, score.rating_fes, score.rating_fesp, score.rating_bud, score.message_url, score.date_unix, score.user_id, score.chart_hash, score.accuracy, score.rating_uni, score.rating_unip, score.rating_fes, score.rating_fesp, score.rating_bud, score.message_url, score.date_unix];
+      let params = [score.hash, score.user_id, score.chart_hash, score.accuracy, score.rating_uni, score.rating_unip, score.rating_fes, score.rating_fesp, score.rating_bud, score.rating_budp, score.message_url, score.date_unix, score.user_id, score.chart_hash, score.accuracy, score.rating_uni, score.rating_unip, score.rating_fes, score.rating_fesp, score.rating_bud, score.rating_budp, score.message_url, score.date_unix];
 
       console.log(`[LOAD_OLD_SCORES]: SCORES: ${i+1}/${scores.length} - ${score.hash}`);
 
@@ -90,12 +90,12 @@ async function updateScores(){
     });
 
     users.forEach((user, i) => {
-      const query = `INSERT INTO users (id, alias, color, scores_submitted, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, count_uni, count_unip, count_fes, count_fesp, count_bud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      const query = `INSERT INTO users (id, alias, color, scores_submitted, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, count_uni, count_unip, count_fes, count_fesp, count_bud, count_budp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
       ON CONFLICT(id) DO UPDATE SET alias = ?, color = ?
       `;
 
-      let params = [user.id, user.alias, user.color, user.scores_submitted, user.rating_uni, user.rating_unip, user.rating_fes, user.rating_fesp, user.rating_bud, user.count_uni, user.count_unip, user.count_fes, user.count_fesp, user.count_bud, user.alias, user.color];
+      let params = [user.id, user.alias, user.color, user.scores_submitted, user.rating_uni, user.rating_unip, user.rating_fes, user.rating_fesp, user.rating_bud, user.rating_budp, user.count_uni, user.count_unip, user.count_fes, user.count_fesp, user.count_bud, user.count_budp, user.alias, user.color];
       console.log(`[LOAD_OLD_SCORES]: USERS: ${i+1}/${users.length} - ${user.id}`);
 
         db.run(query, params, function(e) {

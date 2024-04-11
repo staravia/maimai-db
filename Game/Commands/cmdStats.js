@@ -121,6 +121,7 @@ async function displayUserStatsAsync(game, msg, cache, userParams, increment = 0
 	cache.page = Math.min(last_page, Math.max(0, cache.page));
 
 	description = `Viewing stats for \`${cache.user}\`\n`;
+	description += `- ${GameVersion.BUDDIESPLUS.label} Rating: \`${getRatingLabel(cache.stats.rating_budp).label}\`  Charts: \`${cache.stats.count_budp}/15\`\n`;
 	description += `- ${GameVersion.BUDDIES.label} Rating: \`${getRatingLabel(cache.stats.rating_bud).label}\`  Charts: \`${cache.stats.count_bud}/15\`\n`;
 	description += `- ${GameVersion.FESTIVALPLUS.label} Rating: \`${getRatingLabel(cache.stats.rating_fesp).label}\`  Charts: \`${cache.stats.count_fesp}/15\`\n`;
 	description += `- ${GameVersion.FESTIVAL.label} Rating: \`${getRatingLabel(cache.stats.rating_fes).label}\`  Charts: \`${cache.stats.count_fes}/15\`\n`;
@@ -145,6 +146,9 @@ async function displayUserStatsAsync(game, msg, cache, userParams, increment = 0
 			break;
 		case GameVersion.BUDDIES.id:
 			curColor = getRatingLabel(cache.stats.rating_bud).rankColor;
+			break;
+		case GameVersion.BUDDIESPLUS.id:
+			curColor = getRatingLabel(cache.stats.rating_budp).rankColor;
 			break;
 	}
 
@@ -271,6 +275,9 @@ async function displayLeaderboardsAsync(game, msg, cache, userParams, increment 
 					break;
 				case GameVersion.BUDDIES.id:
 					rating_cur = user.rating_bud;
+					break;
+				case GameVersion.BUDDIESPLUS.id:
+					rating_cur = user.rating_budp;
 					break;
 			}
 
