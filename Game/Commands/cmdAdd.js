@@ -47,6 +47,7 @@ async function cmdAdd(game, msg){
 	let stats_fes = getRatingStats(chartParams.accuracy, chartParams.chart.const_fes);
 	let stats_fesp = getRatingStats(chartParams.accuracy, chartParams.chart.const_fesp);
 	let stats_bud = getRatingStats(chartParams.accuracy, chartParams.chart.const_bud);
+	let stats_budp = getRatingStats(chartParams.accuracy, chartParams.chart.const_budp);
 	let description = ``;
 	let tags = getTagSuffix(chartParams.chart.tags, true);
 	let chart_description = getChartDescription(chartParams.chart);
@@ -77,13 +78,13 @@ async function cmdAdd(game, msg){
 	const hash = Crypto.createHash('md5').update(`${msg.author.id}-${chartParams.chart.hash}`);
 	const hex = hash.digest('hex');
 	const query = `INSERT INTO scores
-		(hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		ON CONFLICT(hash) DO UPDATE SET user_id = ?, chart_hash = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, message_url = ?, date_unix = ?`;
+		(hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		ON CONFLICT(hash) DO UPDATE SET user_id = ?, chart_hash = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, rating_budp = ?, message_url = ?, date_unix = ?`;
 
 	let date = `${Math.floor(Date.now()/1000)}`;
 	date.replace(`.0`, ``);
 
-	let params = [hex, user_id, chartParams.chart.hash, chartParams.accuracy, stats_uni.rating, stats_unip.rating, stats_fes.rating, stats_fesp.rating, stats_bud.rating, ""/*msg.url*/, date, user_id, chartParams.chart.hash, chartParams.accuracy, stats_uni.rating, stats_unip.rating, stats_fes.rating, stats_fesp.rating, stats_bud.rating, ""/*msg.url*/, date];
+	let params = [hex, user_id, chartParams.chart.hash, chartParams.accuracy, stats_uni.rating, stats_unip.rating, stats_fes.rating, stats_fesp.rating, stats_bud.rating, stats_budp.rating, ""/*msg.url*/, date, user_id, chartParams.chart.hash, chartParams.accuracy, stats_uni.rating, stats_unip.rating, stats_fes.rating, stats_fesp.rating, stats_bud.rating, stats_budp.rating, ""/*msg.url*/, date];
 
 	let queryLog = getDbLogString(query, params, Commands.ADD.log_string);
 	let result = await new Promise((resolve, reject) => {

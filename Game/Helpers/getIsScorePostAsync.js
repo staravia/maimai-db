@@ -75,6 +75,7 @@ async function getIsScorePostAsync(game, msg){
 		let stats_fes = getRatingStats(result.accScore, chart.const_fes);
 		let stats_fesp = getRatingStats(result.accScore, chart.const_fesp);
 		let stats_bud = getRatingStats(result.accScore, chart.const_bud);
+		let stats_budp = getRatingStats(result.accScore, chart.const_budp);
 		let stats_cur = getRatingStats(result.accScore, chart.lvl);
 		let embedTitle = getChartDescription(chart);
 		let message = ``;// `- New Record: \`Using highest score.\`\n`; // `- New Record: \`${msg.author.username} - ${pbMessage}\`\n`;
@@ -90,7 +91,7 @@ async function getIsScorePostAsync(game, msg){
 
 		attachments.push(thumbnail);
 		embeds.push(embed);
-		results.push({accuracy: result.accScore, stats_uni: stats_uni, stats_unip: stats_unip, stats_fes: stats_fes, stats_fesp: stats_fesp, stats_bud: stats_bud, chart_hash: chart.hash, song_info: embedTitle});
+		results.push({accuracy: result.accScore, stats_uni: stats_uni, stats_unip: stats_unip, stats_fes: stats_fes, stats_fesp: stats_fesp, stats_bud: stats_bud, stats_budp: stats_budp, chart_hash: chart.hash, song_info: embedTitle});
   }
 
 	const user_id = msg.author.id;
@@ -106,9 +107,9 @@ async function getIsScorePostAsync(game, msg){
 				const hash = Crypto.createHash('md5').update(`${user_id}-${result.chart_hash}`);
 				const hex = hash.digest('hex');
 				const query = `INSERT INTO scores
-					(hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-					ON CONFLICT(hash) DO UPDATE SET user_id = ?, chart_hash = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, message_url = ?, date_unix = ?`;
-				let params = [hex, user_id, result.chart_hash, result.accuracy, result.stats_uni.rating, result.stats_unip.rating, result.stats_fes.rating, result.stats_fesp.rating, result.stats_bud.rating, msg.url, date, user_id, result.chart_hash, result.accuracy, result.stats_uni.rating, result.stats_unip.rating, result.stats_fes.rating, result.stats_fesp.rating, result.stats_bud.rating, msg.url, date];
+					(hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					ON CONFLICT(hash) DO UPDATE SET user_id = ?, chart_hash = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, rating_budp = ?, message_url = ?, date_unix = ?`;
+				let params = [hex, user_id, result.chart_hash, result.accuracy, result.stats_uni.rating, result.stats_unip.rating, result.stats_fes.rating, result.stats_fesp.rating, result.stats_bud.rating, result.stats_budp.rating, msg.url, date, user_id, result.chart_hash, result.accuracy, result.stats_uni.rating, result.stats_unip.rating, result.stats_fes.rating, result.stats_fesp.rating, result.stats_bud.rating, result.stats_budp.rating, msg.url, date];
 
 				queryLog += getDbLogString(query, params, Commands.TOP.log_string);
 

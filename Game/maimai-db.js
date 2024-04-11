@@ -107,8 +107,8 @@ module.exports = class Game {
 			case Commands.CREDITS:
 				this.commands.cmdCredits(this, msg);
 				return;
-			case Commands.LEADERBOARD:
-				this.commands.cmdLeaderboard(this, msg);
+			case Commands.MYTHOS:
+				this.commands.cmdMythos(this, msg);
 				return;
     }
 	}
@@ -163,8 +163,8 @@ async function handleSearchPage(game, interaction, increment){
 		case Commands.HELP:
 			await game.commands.cmdHelp(game, interaction.message, increment, request);
 			break;
-		case Commands.LEADERBOARD:
-			await game.commands.cmdLeaderboard(game, interaction.message, increment, request);
+		case Commands.MYTHOS:
+			await game.commands.cmdMythos(game, interaction.message, increment, request);
 			break;
 	}
 

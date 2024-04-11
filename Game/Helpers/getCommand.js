@@ -11,11 +11,6 @@ function getCommand(str){
 		}
 	});
 
-	// This is temp.
-	if (str == "mythos"){
-		return Commands.LEADERBOARD;
-	}
-
   return result;
 }
 

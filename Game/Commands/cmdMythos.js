@@ -14,7 +14,7 @@ const { IntentsBitField, AttachmentBuilder, EmbedBuilder, ButtonBuilder, ActionR
 let initialized = false;
 let client = null;
 
-async function cmdLeaderboard(game, msg, increment = 0, cache = null){
+async function cmdMythos(game, msg, increment = 0, cache = null){
 	let userParams = null;
 	if (cache == null){
 		let args = getSearchArguments(msg.content);
@@ -33,7 +33,7 @@ async function cmdLeaderboard(game, msg, increment = 0, cache = null){
 	}
 }
 
-function handleInitialization(){
+function handleInitialization(msg){
 	if (initialized)
 		return;
 
@@ -43,25 +43,31 @@ function handleInitialization(){
 	try {
 		client = new proto.MaimaiLeaderboard(Secrets.MYTHOS, grpc.credentials.createSsl());
 	} catch {
-		msg.reply("The administrator has not set up Mythos API support.")
+		msg.reply("Error connecting to Mythos API.")
 		return;
 	}
 }
 
 async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, increment = 0) {
-	if (cache != null) {
+	if (cache != null){
 		handleLeaderboardsMessage(game, msg, cache, userParams, increment);
 		return;
 	}
 
 	// Is there better way to do this?
-	handleInitialization();
+	handleInitialization(msg);
 
 	const requestMetadata = new grpc.Metadata();
 	requestMetadata.add('Authorization', `${Secrets.MYTHOS_API}`)
 
+	const request = {
+	  music_id: 11536,
+	  level: 4, // easy, advance, etc
+	  ranking_type: 1 // achievement vs dx (970294) = 97.02%
+	};
+
 	var response = await new Promise((resolve, reject) => {
-		client.GetRating({ "": "" }, requestMetadata, function(err, res) {
+		client.GetMusicHighScores(request, requestMetadata, function(err, res) {
 			if (!err) {
 				resolve(res);
 			} else {
@@ -75,37 +81,38 @@ async function displayMythosLeaderboardsAsync(game, msg, cache, userParams, incr
 		return;
 	}
 
-	leaderboard = response.entries
-	cache = new SearchArgs();
-	cache.command = Commands.LEADERBOARD;
-	cache.page = 0;
-	cache.game_version = userParams.version.id;
-	cache.diff_version = userParams.version.id;
-	cache.userParams = userParams;
-	game.requestsCache[msg.author.id] = cache;
-
-	let users = [];
-	for (i = 0; i < leaderboard.length; i++){
-		users.push(await leaderboard[i])
-	}
-
-	let cached_users = [];
-	for (var i = 0; i < users.length; i++){
-		let user = users[i];
-		if (cached_users[user.user_name] == undefined){
-			let username = user.user_name
-			cached_users[user.user_name] = username;
-		}
-	}
-
-	cache.users = users;
-	cache.cached_users = cached_users;
-
-	if (cache.users == null){
-		cache.users = [];
-	}
-
-	handleLeaderboardsMessage(game, msg, cache, userParams, increment);
+	console.log(response);
+	// leaderboard = response.entries
+	// cache = new SearchArgs();
+	// cache.command = Commands.LEADERBOARD;
+	// cache.page = 0;
+	// cache.game_version = userParams.version.id;
+	// cache.diff_version = userParams.version.id;
+	// cache.userParams = userParams;
+	// game.requestsCache[msg.author.id] = cache;
+	//
+	// let users = [];
+	// for (i = 0; i < leaderboard.length; i++){
+	// 	users.push(await leaderboard[i])
+	// }
+	//
+	// let cached_users = [];
+	// for (var i = 0; i < users.length; i++){
+	// 	let user = users[i];
+	// 	if (cached_users[user.user_name] == undefined){
+	// 		let username = user.user_name
+	// 		cached_users[user.user_name] = username;
+	// 	}
+	// }
+	//
+	// cache.users = users;
+	// cache.cached_users = cached_users;
+	//
+	// if (cache.users == null){
+	// 	cache.users = [];
+	// }
+	//
+	// handleLeaderboardsMessage(game, msg, cache, userParams, increment);
 }
 
 function handleLeaderboardsMessage(game, msg, cache, userParams, increment){
@@ -171,4 +178,4 @@ function handleLeaderboardsMessage(game, msg, cache, userParams, increment){
 	}
 }
 
-module.exports = cmdLeaderboard;
+module.exports = cmdMythos;

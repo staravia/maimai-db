@@ -12,11 +12,13 @@ async function handleInitDatabaseAsync(db) {
       rating_fes REAL,
       rating_fesp REAL,
       rating_bud REAL,
+      rating_budp REAL,
       count_uni REAL,
       count_unip REAL,
       count_fes REAL,
       count_fesp REAL,
-      count_bud REAL
+      count_bud REAL,
+      count_budp REAL
     )`;
 
   const createGuildsQuery = `
@@ -40,6 +42,7 @@ async function handleInitDatabaseAsync(db) {
       rating_fes REAL,
       rating_fesp REAL,
       rating_bud REAL,
+      rating_budp REAL,
       message_url TEXT,
       date_unix TEXT,
       FOREIGN KEY (user_id) REFERENCES users(id),
@@ -49,6 +52,7 @@ async function handleInitDatabaseAsync(db) {
   const createChartsQuery = `
     CREATE TABLE IF NOT EXISTS charts (
       hash TEXT UNIQUE PRIMARY KEY,
+      song_id INTEGER,
       dx_version INTEGER,
       is_locked BOOLEAN,
       is_international BOOLEAN,
@@ -64,6 +68,7 @@ async function handleInitDatabaseAsync(db) {
       const_fes DECIMAL,
       const_fesp DECIMAL,
       const_bud DECIMAL,
+      const_budp DECIMAL,
 			count_taps INTEGER,
       count_holds INTEGER,
       count_slides INTEGER,

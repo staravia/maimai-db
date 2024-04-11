@@ -121,7 +121,9 @@ function handleSearchArguments(game, query, search = null, msg = null, doNotUpda
 	const allFlagsDisabled = Object.values(searchflags).every(flag => !flag);
 
 	let diff_version = game.game_version;
-	if (game_version >= GameVersion.BUDDIES.id){
+	if (game_version >= GameVersion.BUDDIESPLUS.id){
+		diff_version = GameVersion.BUDDIESPLUS.id;
+	} else if (game_version >= GameVersion.BUDDIES.id){
 		diff_version = GameVersion.BUDDIES.id;
 	} else if (game_version >= GameVersion.FESTIVALPLUS.id){
 		diff_version = GameVersion.FESTIVALPLUS.id;
