@@ -126,7 +126,7 @@ async function handleUpdateRatingAsync(msg, game, user_id, game_version = null){
 	let ratingLabel = getRatingLabel(rating_cur);
 	let description = `Your db Rating (Top 35+15): ${ratingLabel.label}`;
 	query = `INSERT INTO users
-		(id, scores_submitted, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, count_uni, count_unip, count_fes, count_fesp, count_bud, count_budp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		(id, scores_submitted, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, count_uni, count_unip, count_fes, count_fesp, count_bud, count_budp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT(id) DO UPDATE SET scores_submitted = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, rating_budp = ?, count_uni = ?, count_unip = ?, count_fes = ?, count_fesp = ?, count_bud = ?, count_budp = ?`;
 
 	params = [user_id, scores_submitted, ratingStat[GameVersion.UNIVERSE.id].rating, ratingStat[GameVersion.UNIVERSEPLUS.id].rating, ratingStat[GameVersion.FESTIVAL.id].rating, ratingStat[GameVersion.FESTIVALPLUS.id].rating,

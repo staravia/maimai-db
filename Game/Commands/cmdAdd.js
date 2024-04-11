@@ -78,7 +78,7 @@ async function cmdAdd(game, msg){
 	const hash = Crypto.createHash('md5').update(`${msg.author.id}-${chartParams.chart.hash}`);
 	const hex = hash.digest('hex');
 	const query = `INSERT INTO scores
-		(hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		(hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		ON CONFLICT(hash) DO UPDATE SET user_id = ?, chart_hash = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, rating_budp = ?, message_url = ?, date_unix = ?`;
 
 	let date = `${Math.floor(Date.now()/1000)}`;
@@ -91,7 +91,7 @@ async function cmdAdd(game, msg){
 		game.db.run(query, params
 			, function(e) {
 			if (e) {
-				console.error(`[SCORE]: FAILED to submit score: ${msg.author} - ${result.song_info}`, e);
+				console.error(`[SCORE]: FAILED to submit score: ${e.message}`, e);
 			} else {
 				resolve(true);
 			}
