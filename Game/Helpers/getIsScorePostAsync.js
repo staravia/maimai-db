@@ -107,7 +107,7 @@ async function getIsScorePostAsync(game, msg){
 				const hash = Crypto.createHash('md5').update(`${user_id}-${result.chart_hash}`);
 				const hex = hash.digest('hex');
 				const query = `INSERT INTO scores
-					(hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+					(hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 					ON CONFLICT(hash) DO UPDATE SET user_id = ?, chart_hash = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, rating_budp = ?, message_url = ?, date_unix = ?`;
 				let params = [hex, user_id, result.chart_hash, result.accuracy, result.stats_uni.rating, result.stats_unip.rating, result.stats_fes.rating, result.stats_fesp.rating, result.stats_bud.rating, result.stats_budp.rating, msg.url, date, user_id, result.chart_hash, result.accuracy, result.stats_uni.rating, result.stats_unip.rating, result.stats_fes.rating, result.stats_fesp.rating, result.stats_bud.rating, result.stats_budp.rating, msg.url, date];
 

@@ -14,7 +14,7 @@ async function handleSyncSheetsAsync(googleClient, db, msg = null){
   await googleClient.authorize();
   console.log("[INIT]: Successfully Authorized Google API!");
   let results = await getChartsFromSpreadsheet(googleClient);
-  console.log("[INIT]: Successfully Fetched data from Google Sheets!");
+  console.log(`[INIT]: Successfully Fetched ${results.charts.length} charts from Google Sheets!`);
   await downloadImagesFromWebAsync(results.image_files);
   console.log("[INIT]: Successfully Downloaded new image files!");
   let count = await initChartsAsync(db, results.charts);
@@ -38,12 +38,12 @@ async function initChartsAsync(db, charts) {
         if (chart != undefined){
           const isLast = i == charts.length - 2;
           const query = `INSERT INTO charts
-            (hash, dx_version, is_locked, is_international, is_china, title, artist, notes_designer, category, game_version, difficulty, const_uni, const_unip, const_fes, const_fesp, const_bud, const_budp, count_taps, count_holds, count_slides, count_touch, count_break, count_total, tags, bpm, image_file, search_title)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (hash, id, dx_version, is_locked, is_international, is_china, title, artist, notes_designer, category, game_version, difficulty, const_uni, const_unip, const_fes, const_fesp, const_bud, const_budp, count_taps, count_holds, count_slides, count_touch, count_break, count_total, tags, bpm, image_file, search_title)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 
             ON CONFLICT(hash)
             DO UPDATE SET
-            dx_version = ?, is_locked = ?, is_international = ?, is_china = ?, title = ?, artist = ?, notes_designer = ?, category = ?, game_version = ?, difficulty = ?, const_uni = ?, const_unip = ?, const_fes = ?, const_fesp = ?, const_bud = ?, const_budp = ?, count_taps = ?, count_holds = ?, count_slides = ?, count_touch = ?, count_break = ?, count_total = ?, tags = ?, bpm = ?, image_file = ?, search_title = ?
+            id = ?, dx_version = ?, is_locked = ?, is_international = ?, is_china = ?, title = ?, artist = ?, notes_designer = ?, category = ?, game_version = ?, difficulty = ?, const_uni = ?, const_unip = ?, const_fes = ?, const_fesp = ?, const_bud = ?, const_budp = ?, count_taps = ?, count_holds = ?, count_slides = ?, count_touch = ?, count_break = ?, count_total = ?, tags = ?, bpm = ?, image_file = ?, search_title = ?
             `;
 
           // Insert chart into database
@@ -63,9 +63,9 @@ async function initChartsAsync(db, charts) {
             tags |= Tags.SPIN.id;
           }
 
-          db.run(query, [chart.hash, chart.is_dx, chart.is_locked, chart.is_international, chart.is_china, chart.title, chart.artist, chart.notes_designer, chart.category, chart.version, chart.difficulty_id, chart.const_uni, chart.const_unip, chart.const_fes, chart.const_fesp, chart.const_bud, chart.const_budp, chart.count_taps, chart.count_holds, chart.count_slides, chart.count_touch, chart.count_break, chart.count_total, tags, chart.bpm, chart.image_file, chart.search_title,
+          db.run(query, [chart.hash, chart.id, chart.is_dx, chart.is_locked, chart.is_international, chart.is_china, chart.title, chart.artist, chart.notes_designer, chart.category, chart.version, chart.difficulty_id, chart.const_uni, chart.const_unip, chart.const_fes, chart.const_fesp, chart.const_bud, chart.const_budp, chart.count_taps, chart.count_holds, chart.count_slides, chart.count_touch, chart.count_break, chart.count_total, tags, chart.bpm, chart.image_file, chart.search_title,
 
-            chart.is_dx, chart.is_locked, chart.is_international, chart.is_china, chart.title, chart.artist, chart.notes_designer, chart.category, chart.version, chart.difficulty_id, chart.const_uni, chart.const_unip, chart.const_fes, chart.const_fesp, chart.const_bud, chart.const_budp, chart.count_taps, chart.count_holds, chart.count_slides, chart.count_touch, chart.count_break, chart.count_total, tags, chart.bpm, chart.image_file, chart.search_title
+            chart.id, chart.is_dx, chart.is_locked, chart.is_international, chart.is_china, chart.title, chart.artist, chart.notes_designer, chart.category, chart.version, chart.difficulty_id, chart.const_uni, chart.const_unip, chart.const_fes, chart.const_fesp, chart.const_bud, chart.const_budp, chart.count_taps, chart.count_holds, chart.count_slides, chart.count_touch, chart.count_break, chart.count_total, tags, chart.bpm, chart.image_file, chart.search_title
 
           ], function(e) {
             if (e) {

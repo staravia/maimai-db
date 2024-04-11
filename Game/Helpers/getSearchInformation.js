@@ -80,8 +80,8 @@ function getSearchInformation(args, isScores = false, detailedScores = false, si
 		} if (chart.const_fesp != chart.const_bud){
 			let desc = getBuffedDescription("Fes+ → Bud", chart.const_fesp, chart.const_bud);
 			buffed_descriptions.push(desc);
-		} if (chart.const_fesp != chart.const_budp){
-			let desc = getBuffedDescription("Bud+ → Bud+", chart.const_bud, chart.const_budp);
+		} if (chart.const_bud != chart.const_budp){
+			let desc = getBuffedDescription("Bud → Bud+", chart.const_bud, chart.const_budp);
 			buffed_descriptions.push(desc);
 		}
 

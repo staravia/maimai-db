@@ -14,7 +14,7 @@ const Commands = importCommands();
 
 const { JWT } = require('google-auth-library');
 const { Client, IntentsBitField, AttachmentBuilder, EmbedBuilder, ActivityType } = require('discord.js');
-const { Difficulties, Categories, DxVersion, GameVersion, Tags } = require("./Game/constants.js");
+const { Difficulties, Categories, DxVersion, GameVersion, Tags, Constants } = require("./Game/constants.js");
 
 const googleClient = new JWT({
 	keyFile: Secrets.TOKEN_KEYFILE,
@@ -162,7 +162,8 @@ discord.on("messageCreate", (msg) => {
       setTimeout(() => {
           instances[msg.guild.id].handleOnMessage(msg, users[msg.author.id]);
         }, 1000);
-    } else if (msg.author.id == '148332220120039424' && msg.content == 'm!sync') {
+    } else if (msg.author.id == '148332220120039424' && msg.content == `${Constants.Prefix}sync`) {
+			msg.reply("Ok, trying!")
       handleSyncSheetsAsync(googleClient, db, msg);
     } else {
       instances[msg.guild.id].handleOnMessage(msg, users[msg.author.id]);
@@ -184,7 +185,7 @@ discord.on("interactionCreate", async (interaction) => {
 
 async function init(){
   await handleInitDatabaseAsync(db);
-	await handleDatabaseUpdateAsync(googleClient, db);
+	// await handleDatabaseUpdateAsync(googleClient, db);
   // await handleSyncSheetsAsync(googleClient, db);
   await discord.login(Secrets.CLIENT_TOKEN);
   let date = `${Math.floor(Date.now()/1000)}`;

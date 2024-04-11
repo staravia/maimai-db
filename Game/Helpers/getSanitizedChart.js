@@ -26,10 +26,18 @@ function getSanitizedChart(chart, args, invalidate_lvl = false){
 	// TODO: make more elegant
 	chart.lvl = -1;
 	switch (args.diff_version) {
+		case GameVersion.BUDDIES.id:
+			chart.lvl = chart.const_fesp;
+			if (!invalidate_lvl && chart.lvl == 0){
+				chart.lvl = chart.const_budp;
+			}
+			break;
 		case GameVersion.FESTIVALPLUS.id:
 			chart.lvl = chart.const_fesp;
 			if (!invalidate_lvl && chart.lvl == 0){
 				chart.lvl = chart.const_bud;
+			} if (!invalidate_lvl && chart.lvl == 0){
+				chart.lvl = chart.const_budp;
 			}
 			break;
 		case GameVersion.FESTIVAL.id:
@@ -38,6 +46,8 @@ function getSanitizedChart(chart, args, invalidate_lvl = false){
 				chart.lvl = chart.const_fesp;
 			} if (!invalidate_lvl && chart.lvl == 0){
 				chart.lvl = chart.const_bud;
+			} if (!invalidate_lvl && chart.lvl == 0){
+				chart.lvl = chart.const_budp;
 			}
 			break;
 		case GameVersion.UNIVERSEPLUS.id:
@@ -48,6 +58,8 @@ function getSanitizedChart(chart, args, invalidate_lvl = false){
 				chart.lvl = chart.const_fesp;
 			} if (!invalidate_lvl && chart.lvl == 0){
 				chart.lvl = chart.const_bud;
+			} if (!invalidate_lvl && chart.lvl == 0){
+				chart.lvl = chart.const_budp;
 			}
 			break;
 		case GameVersion.UNIVERSE.id:
@@ -60,10 +72,12 @@ function getSanitizedChart(chart, args, invalidate_lvl = false){
 				chart.lvl = chart.const_fesp;
 			} if (!invalidate_lvl && chart.lvl == 0){
 				chart.lvl = chart.const_bud;
+			} if (!invalidate_lvl && chart.lvl == 0){
+				chart.lvl = chart.const_budp;
 			}
 			break;
 		default:
-			chart.lvl = chart.const_bud;
+			chart.lvl = chart.const_budp;
 			break;
 	}
 
