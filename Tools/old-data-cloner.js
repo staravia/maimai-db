@@ -481,7 +481,6 @@ async function handleChartData(prevCharts, uniFesData){
         const_fes: 0, // TODO:
         const_fesp: 0, // TODO:
         const_bud: sheet.internalLevelValue,
-        search_title: "", // TODO:
 				is_power: false,
 				is_tech: false,
 				is_intelligence: false,

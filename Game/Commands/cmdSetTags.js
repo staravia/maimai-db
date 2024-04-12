@@ -112,7 +112,7 @@ async function cmdSetTags(game, msg){
 
 	const spreadsheetId = Secrets.SPREADSHEET_ID;
 	const sheetName = 'database';
-	const range = `${sheetName}!A:Z`;
+	const range = `${sheetName}!A:AA`;
 	const sheets = google.sheets({
 		version: 'v4',
 		auth: game.google
@@ -224,7 +224,7 @@ async function cmdSetTags(game, msg){
 		await sheets.spreadsheets.values.update({
 				auth: game.google,
 	      spreadsheetId: spreadsheetId,
-	      range: `${sheetName}!A${row_index}:Z${row_index}`,
+	      range: `${sheetName}!A${row_index}:AA${row_index}`,
 	      valueInputOption: "USER_ENTERED",
 	      resource : {
 	          values: [result]
