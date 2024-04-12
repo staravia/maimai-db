@@ -206,7 +206,7 @@ module.exports.GameVersion = {
 	FESTIVAL: {id: 2 ** 19, json_label: "舞萌DX 2023", label: "FESTiVAL", search_titles: ["festival", "fes", "fest"], const_label: "const_fes", rating_label: "rating_fes"},
 	FESTIVALPLUS: {id: 2 ** 20, json_label: "舞萌DX 2023", label: "FESTiVAL PLUS", search_titles: ["festival+", "festivalplus", "fesp", "fest+", "fes+", "fesplus"], const_label: "const_fesp", rating_label: "rating_fesp"},
 	BUDDIES: {id: 2 ** 21, json_label: "舞萌DX 2024", label: "BUDDiES", search_titles: ["buddies", "buds", "bud", "buddy"], const_label: "const_bud", rating_label: "rating_bud"},
-	BUDDIESPLUS: {id: 2 ** 22, json_label: "舞萌DX 2024", label: "BUDDiES PLUS", search_titles: ["buddiesplus", "budsplus", "budplus", "buddyplus", "buddies+", "buds+", "bud+", "buddy+"], const_label: "const_bud", rating_label: "rating_budp"},
+	BUDDIESPLUS: {id: 2 ** 22, json_label: "舞萌DX 2024", label: "BUDDiES PLUS", search_titles: ["buddiesplus", "budsplus", "budplus", "buddyplus", "buddies+", "buds+", "bud+", "buddy+"], const_label: "const_budp", rating_label: "rating_budp"},
 	UNTIL: {id: 2 ** 31, json_label: "", label: "Until", search_titles: ["until", "upto"] }
 };
 

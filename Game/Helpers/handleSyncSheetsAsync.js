@@ -28,10 +28,11 @@ async function handleSyncSheetsAsync(googleClient, db, msg = null){
 
   results = await sanitizeNewCharts(googleClient, results, newCharts);
 
-  msg.reply(`New charts found! Total: \`${results.inserted_charts.length}\``);
-  await appendNewCharts(googleClient, results);
-  msg.reply(`Sheets has been updated.`)
+  if (msg != null){
+    msg.reply(`Adding new charts... Total found: \`${results.inserted_charts.length}\`. Please wait...`);
+  }
 
+  await appendNewCharts(googleClient, results, msg);
   await downloadImagesFromWebAsync(results.image_files);
   console.log("[SYNC]: Successfully Downloaded new image files!");
   let count = await initChartsAsync(db, results.charts);
@@ -45,7 +46,7 @@ async function handleSyncSheetsAsync(googleClient, db, msg = null){
   }
 }
 
-async function appendNewCharts(googleClient, results){
+async function appendNewCharts(googleClient, results, msg = null){
   const sheetName = 'database';
   const spreadsheetId = Secrets.SPREADSHEET_ID;
   const range = `${sheetName}!A2:AA`;
@@ -55,10 +56,14 @@ async function appendNewCharts(googleClient, results){
   });
 
   for (let i = 0; i < results.inserted_charts.length; i ++){
-    const data = results.inserted_charts[i];
-    const const_bud = data.const_bud == 0 ? `*${data.const_budp}` : data.const_bud;
+    if (msg != null && i%10 == 0 || i == results.inserted_charts.length - 1){
+      msg.reply(`Adding new charts... Progress: \`${i + 1}/${results.inserted_charts.length}\``);
+    }
 
-    let result = [  data.id, data.image_file, data.title, data.artist, data.game_version, data.category, data.dx_version, data.difficulty, data.is_international, data.is_china, data.is_locked, `*${data.const_budp}`, `*${data.const_budp}`, `*${data.const_budp}`, `*${data.const_budp}`, const_bud, data.const_budp, "", "", "", "", "", "", data.distribution, data.bpm, data.notes_designer, data.search_title ];
+    const data = results.inserted_charts[i];
+    const const_bud = data.const_bud == 0 ? `${data.const_budp}*` : data.const_bud;
+
+    let result = [  data.id, data.image_file, data.title, data.artist, data.game_version, data.category, data.dx_version, data.difficulty, data.is_international, data.is_china, data.is_locked, `${data.const_budp}*`, `${data.const_budp}*`, `${data.const_budp}*`, `${data.const_budp}*`, const_bud, data.const_budp, "", "", "", "", "", "", data.distribution, data.bpm, data.notes_designer, data.search_title ];
 
     await sheets.spreadsheets.values.append({
         auth: googleClient,
@@ -86,6 +91,10 @@ async function sanitizeNewCharts(googleClient, results, newCharts){
       continue;
     }
 
+    if (!results.image_files.includes(chart.image_file)){
+      results.image_files.push(chart.image_file);
+    }
+
     inserted_charts.push(chart);
   }
 
@@ -102,7 +111,7 @@ async function sanitizeNewCharts(googleClient, results, newCharts){
       let translatedText = await getTranslatedTextAsync(chart.title);
       translated[chart.title] = translatedText;
 
-      console.log(`[SYNC]: [${i}/${inserted_charts.length}]New song has been translated: ${chart.title} -> ${translatedText}`);
+      console.log(`[SYNC]: [${i}/${inserted_charts.length}] New song has been translated: ${chart.title} -> ${translatedText}`);
     } catch (error) {
       console.error('Error translating:', error);
     }
@@ -126,7 +135,6 @@ async function sanitizeNewCharts(googleClient, results, newCharts){
 			}
 
 			chart.search_title = str.toLowerCase();
-      console.log(chart.search_title);
 		}
 		catch (e) {
       console.log(e);
@@ -140,25 +148,25 @@ async function sanitizeNewCharts(googleClient, results, newCharts){
 }
 
 async function getTranslatedTextAsync(text) {
-  // const location = 'global';
-  //
-  // const request = {
-  //   parent: `projects/${projectId}/locations/${location}`,
-  //   contents: [text],
-  //   mimeType: 'text/plain',
-  //   sourceLanguageCode: 'ja',
-  //   targetLanguageCode: 'en',
-  // };
-  //
-	// try {
-	// 	const [response] = await translationClient.translateText(request);
-	// 	const translatedText = response.translations[0].translatedText;
-	// 	return translatedText;
-	// } catch (e) {
-	// 	console.error(e);
-	// }
+  const location = 'global';
 
-	return "TRANSLATED";
+  const request = {
+    parent: `projects/${projectId}/locations/${location}`,
+    contents: [text],
+    mimeType: 'text/plain',
+    sourceLanguageCode: 'ja',
+    targetLanguageCode: 'en',
+  };
+
+	try {
+		const [response] = await translationClient.translateText(request);
+		const translatedText = response.translations[0].translatedText;
+		return translatedText;
+	} catch (e) {
+		console.error(e);
+	}
+
+	return "";
 }
 
 function getMatchingChart(chart, list){
@@ -237,10 +245,17 @@ async function getNewCharts(url){
           case "【は】":
           case "【奏】":
   				case "【逆】":
+          case "【息】":
+          case "【r】":
+          case "【玉】":
+          case "【某】":
+          case "【J】":
+          case "【右】":
+          case "【回】":
             difficulty = Difficulties.SPECIAL.id;
             break;
           default:
-            difficulty = 0;
+            difficulty = Difficulties.SPECIAL.id;
         }
 
         let gameVersion = 0;
