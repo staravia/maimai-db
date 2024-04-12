@@ -53,7 +53,6 @@ async function handleInitDatabaseAsync(db) {
     CREATE TABLE IF NOT EXISTS charts (
       hash TEXT UNIQUE PRIMARY KEY,
       id INTEGER,
-      song_id INTEGER,
       dx_version INTEGER,
       is_locked BOOLEAN,
       is_international BOOLEAN,

@@ -110,7 +110,7 @@ async function getChartRendererAsync(charts, page = 0, user = -1){
 						lvlText += "?";
 					}
 				} else {
-				lvlText = chart.lvl.toFixed(1);
+					lvlText = chart.lvl !== null ? chart.lvl.toFixed(1) : "N/A";
 				}
 				ctx.font = 'bold 64px Arial';
 			}
