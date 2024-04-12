@@ -63,7 +63,7 @@ async function appendNewCharts(googleClient, results, msg = null){
     const data = results.inserted_charts[i];
     const const_bud = data.const_bud == 0 ? `${data.const_budp}*` : data.const_bud;
 
-    let result = [  data.id, data.image_file, data.title, data.artist, data.game_version, data.category, data.dx_version, data.difficulty, data.is_international, data.is_china, data.is_locked, `${data.const_budp}*`, `${data.const_budp}*`, `${data.const_budp}*`, `${data.const_budp}*`, const_bud, data.const_budp, "", "", "", "", "", "", data.distribution, data.bpm, data.notes_designer, data.search_title ];
+    let result = [ data.id, data.image_file, data.title, data.artist, data.game_version, data.category, data.dx_version, data.difficulty, data.is_international, data.is_china, data.is_locked, `${data.const_budp}*`, `${data.const_budp}*`, `${data.const_budp}*`, `${data.const_budp}*`, const_bud, data.const_budp, "", "", "", "", "", "", data.distribution, data.bpm, data.notes_designer, data.search_title ];
 
     await sheets.spreadsheets.values.append({
         auth: googleClient,
