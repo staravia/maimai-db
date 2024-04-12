@@ -5,7 +5,6 @@ const db = new sqlite3.Database('maimai-db.db');
 const handleSetPresence = require('./Game/Helpers/handleSetPresence.js');
 const handleInitDatabaseAsync = require('./Game/Helpers/handleInitDatabaseAsync.js');
 const handleSyncSheetsAsync = require('./Game/Helpers/handleSyncSheetsAsync.js');
-const handleDatabaseUpdateAsync = require('./Game/Helpers/handleDatabaseUpdateAsync.js');
 
 const Game = require("./Game/maimai-db.js");
 const Secrets = require("./Game/Secrets/secrets.js");
