@@ -468,6 +468,10 @@ async function downloadImagesFromWebAsync(image_files) {
   console.log("[SYNC]: Checking for Song Jackets to download...");
   let count = 0;
 
+  if (!fs.existsSync(Constants.ImageDirectory)){
+      fs.mkdirSync(Constants.ImageDirectory);
+  }
+
   for (image of image_files) {
     const imageUrl = `https://dp4p6x0xfi5o9.cloudfront.net/maimai/img/cover/${image}`;
     const imageFilename = path.basename(imageUrl);
