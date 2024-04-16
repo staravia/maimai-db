@@ -59,8 +59,8 @@ async function cmdTop(game, msg, increment = 0, cache = null){
 		scores = cache.search.results;
 	}
 
-	let last_page = Math.floor(scores.length / Constants.DefaultPageSize);
-	if (scores.length % Constants.DefaultPageSize == 0 && scores.length > 0){
+	let last_page = Math.floor(cache.search.results.length / Constants.DefaultPageSize);
+	if (cache.search.results.length % Constants.DefaultPageSize == 0 && scores.length > 0){
 		last_page --;
 	}
 	cache.page += increment;
