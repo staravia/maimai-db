@@ -39,8 +39,26 @@ async function getUserAsync(game, user_id){
 						if (user.alias == null || user.alias == undefined || user.alias == ""){
 							try {
 								// TODO: fix so this line does not run in parallel
-								let found = await game.discord.users.fetch(user.id);
+                let found = "-syncing...-"
+								// let found = await game.discord.users.fetch(user.id);
 								game.cache.usernames[user.id] = found.username;
+
+
+                // const insert_query = `INSERT INTO users (id, alias) VALUES (?) ON CONFLICT(id) DO UPDATE SET alias = ?`;
+                //
+                // let params = [user.id, found.username, found.username];
+                //
+                // let result = await new Promise((resolve, reject) => {
+                //   game.db.run(insert_query, params
+                //     , function(e) {
+                //     if (e) {
+                //       console.error(`[SCORE]: FAILED to update user: ${user.id} - ${found.username}`, e);
+                //     } else {
+                //       resolve(true);
+                //     }
+                //   });
+                // });
+
 								console.log(found.username);
 							} catch {
 								game.cache.usernames[user.id] = "-unknown-";
