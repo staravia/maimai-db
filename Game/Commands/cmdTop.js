@@ -37,23 +37,23 @@ async function cmdTop(game, msg, increment = 0, cache = null){
 		let results = [];
 
 		// TODO: only sanitize 20 loaded charts, NOT ALL
-		for (var i = 0; i < scores.length; i++){
-			let score = scores[i];
-
-			score.user = await getUserAsync(game, score.user_id);
-			score = getSanitizedChart(score, cache, true);
-			let stats = getRatingStats(score.accuracy, score.lvl);
-			score.stats = stats;
-
-			// console.log("YO");
-			if (score.lvl > 0){
-				// console.log(score);
-				results.push(score);
-			}
-		}
+		// for (var i = 0; i < scores.length; i++){
+		// 	let score = scores[i];
+		//
+		// 	score.user = score.user_id; // await getUserAsync(game, score.user_id);
+		// 	score = getSanitizedChart(score, cache, true);
+		// 	let stats = getRatingStats(score.accuracy, score.lvl);
+		// 	score.stats = stats;
+		//
+		// 	// console.log("YO");
+		// 	if (score.lvl > 0){
+		// 		// console.log(score);
+		// 		results.push(score);
+		// 	}
+		// }
 
 		cache.search = chartResult;
-		cache.search.results = results;  //, chart: chartParams.chart };
+		cache.search.results = scores; // results;  //, chart: chartParams.chart };
 		scores = results;
 	} else {
 		scores = cache.search.results;
@@ -70,10 +70,29 @@ async function cmdTop(game, msg, increment = 0, cache = null){
 	let charts = [];
 	let chartSearchFound = cache.search != null && cache.search.chart != null;
 	cache.search = getChartsByPage(cache, Constants.DefaultPageSize);
+
+	// New code... Only sanitize relevant charts
+	scores = cache.search.selected;
+	for (var i = 0; i < scores.length; i++){
+		let score = cache.search.selected[i];
+
+		score.user = await getUserAsync(game, score.user_id);
+		score = getSanitizedChart(score, cache, true);
+		let stats = getRatingStats(score.accuracy, score.lvl);
+		score.stats = stats;
+
+		cache.search.selected[i] = score;
+	}
+
+
+
+
+
+
 	let info = getSearchInformation(cache, true);
 	let description = info.description;
 
-	if (scores.length > 0){
+	if (cache.search.selected.length > 0){
 		let msgTitle = `🏆 - Top Scores`;
 		if (cache.users.length == 0){
 			msgTitle = `${msgTitle} 📖 ${cache.page + 1} / ${last_page + 1}`;
