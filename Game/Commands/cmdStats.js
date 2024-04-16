@@ -41,6 +41,11 @@ async function displayUserStatsAsync(game, msg, cache, userParams, increment = 0
 		cache.diff_version = userParams.version.id;
 		cache.userParams = userParams;
 		cache.user_id = msg.author.id;
+
+		if (cache.userParams != null && cache.userParams.length > 0){
+			cache.username = cache.userParams[0];
+		}
+
 		game.requestsCache[msg.author.id] = cache;
 
 		let user_id = userParams.users[0];
@@ -157,7 +162,7 @@ async function displayUserStatsAsync(game, msg, cache, userParams, increment = 0
 	let info = getSearchInformation(cache, true, true, Constants.DefaultSmallPageSize);
 	description += info.description;
 
-	const renderer = await getChartRendererAsync(cache.search.selected, cache.page, cache.user_id);
+	const renderer = await getChartRendererAsync(cache.search.selected, cache.page, cache.user_id, cache.username);
 	const image = await renderer.toBuffer();
 	const attachment = new AttachmentBuilder(image, {name: 'maimai-db-render.png'});
 

@@ -65,10 +65,14 @@ async function getAllChartsAsync(game, msg, args, is_score = false){
 		} else {
 			let scores_user_query = ``;
 			if (args.users != null && args.users.length > 0){
-				let full_width_name_a = getFullWidthText(args.users[0]);
-				let full_width_name_b = getFullWidthText(capitalizeFirstLetter(args.users[0]));
-				let full_width_name_c = getFullWidthText(args.users[0].toUpperCase());
-				scores_user_query = `AND (user_id LIKE '%${args.users[0]}%' OR user_id LIKE '%${full_width_name_a}%' OR user_id LIKE '%${full_width_name_b}%' OR user_id LIKE '%${full_width_name_c}%')`;
+				args.users.forEach((user_name, i) => {
+					let full_width_name_a = getFullWidthText(user_name);
+					let full_width_name_b = getFullWidthText(capitalizeFirstLetter(user_name));
+					let full_width_name_c = getFullWidthText(user_name.toUpperCase());
+
+					scores_user_query += i == 0 ? 'AND ' : 'OR'
+					scores_user_query += ` (user_id LIKE '%${user_name}%' OR user_id LIKE '%${full_width_name_a}%' OR user_id LIKE '%${full_width_name_b}%' OR user_id LIKE '%${full_width_name_c}%')`;
+				});
 			}
 
 			query = `SELECT scores.id, scores.hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix, charts.* FROM scores JOIN charts ON scores.chart_hash = charts.hash `;  //${userParams.version.rating_label} DESC`;

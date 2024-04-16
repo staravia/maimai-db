@@ -20,7 +20,6 @@ function getSearchInformation(args, isScores = false, detailedScores = false, si
 		description = `Selected \`${selected.length} chart${selected.length === 1 ? '' : 's'}\` out of ${totalresults} result${totalresults === 1 ? '' : 's'}`;
 	}
 	description += `${args.search_description}\n`;
-	description += `> Latest Mythos Check: \`${Constants.MythosLastChecked}\`\n`
 
 	if (!isScores){
 		for (const [i, chart] of selected.entries()) {
@@ -31,6 +30,8 @@ function getSearchInformation(args, isScores = false, detailedScores = false, si
 			description += `${index + 1}. ${chart_description}\n`; // Player: \`${score.user.username}\`  ${score.stats.description_b}\n`; // `${description}\n${line}`;
 		}
 	} else {
+		description += `🌐  Latest Mythos Sync: \`${Constants.MythosLastChecked}\`\n\n`
+
 		for (var i = 0; i < size; i++){
 			let index = args.page * size + i;
 			if (index >= args.search.results.length || index < 0){

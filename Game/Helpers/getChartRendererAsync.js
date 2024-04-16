@@ -3,16 +3,28 @@ const { Categories, DxVersion, Constants } = require("./../constants.js");
 const getGrade = require("./getGrade.js");
 const getTags = require("./getTags.js");
 
+// function getFullWidthText(text) {
+//     return text.split('').map(char => {
+//         const code = char.charCodeAt(0);
+//         // Convert ASCII characters to full-width
+//         if (code >= 33 && code <= 126) {
+//             return String.fromCharCode(code + 65248);
+//         }
+//         // Keep non-ASCII characters unchanged
+//         return char;
+//     }).join('');
+// }
+
 function getCleanUsername(str){
   str = str.normalize("NFKC").replace(/\p{Diacritic}/gu, "");
-  str = str.toLowerCase();
+  // str = str.toLowerCase();
   // str = str.replace(/[^a-zA-Z0-9\s\"\'\\\/,]/g, '');
   str = str.normalize('NFC').replace(`'`, '').replace('！', '!').replace('～', '~').replace('･', '・').replace('（', '(').replace('）', ')');
 
   return str;
 }
 
-async function getChartRendererAsync(charts, page = 0, user = -1){
+async function getChartRendererAsync(charts, page = 0, user = -1, username = null){
 	const img_buffer = 6;
 	const img_size = 256;
 	const img_border_size = img_size+img_buffer;
@@ -140,7 +152,16 @@ async function getChartRendererAsync(charts, page = 0, user = -1){
 				// ctx.strokeStyle = '#ffffff';
 				// ctx.lineWidth = 10;
 				// ctx.strokeText(footerText, center_pos, text_label_pos + y, img_size);
-				if (chart.user_id == user){
+
+				var found_username = false;
+
+				if (username != null) {
+					var clean_user_id = getCleanUsername(chart.user_id).toLowerCase();
+					var clean_user_name = getCleanUsername(username).toLowerCase();
+					found_username = clean_user_id.indexOf(clean_user_name) >= 0 || clean_user_name.indexOf(clean_user_id) >= 0;
+				}
+
+				if (chart.user_id == user || found_username){
 					ctx.fillStyle = `#79fcfc`;
 				} else {
 					ctx.fillStyle = `#ffffff`;

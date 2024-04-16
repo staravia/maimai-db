@@ -24,6 +24,10 @@ async function cmdTop(game, msg, increment = 0, cache = null){
 		cache.users = userParams.users;
 		cache.user_id = msg.author.id;
 
+		if (userParams.users != null && userParams.users.length > 0){
+			cache.username = userParams.users[0];
+		}
+
 		let chartResult = await getAllChartsAsync(game, msg, cache, true);
 		if (chartResult != null && chartResult.results != undefined){
 			scores = chartResult.results;
@@ -79,7 +83,7 @@ async function cmdTop(game, msg, increment = 0, cache = null){
 			msgTitle = `${msgTitle} for ${cache.users.length} users 📖 ${cache.page + 1} / ${last_page + 1}`;
 		}
 
-		const renderer = await getChartRendererAsync(cache.search.selected, cache.page, cache.user_id);
+		const renderer = await getChartRendererAsync(cache.search.selected, cache.page, cache.user_id, cache.username);
 		const image = await renderer.toBuffer();
 		const attachment = new AttachmentBuilder(image, {name: 'maimai-db-render.png'});
 		const embed = new EmbedBuilder()
