@@ -136,7 +136,7 @@ async function processMythosScores(){
     const chart = charts[i];
 
     let scores = await getScoresFromMythos(chart);
-    await new Promise(resolve => setTimeout(resolve, 700)); // Delay
+    await new Promise(resolve => setTimeout(resolve, 400)); // Delay
 
     if (scores == null) {
       console.log(`[MYHOS_FETCH]: Failed to fetch scores for [${i}] ${chart.title}`);
