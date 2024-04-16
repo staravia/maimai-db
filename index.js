@@ -168,7 +168,11 @@ discord.on("messageCreate", (msg) => {
       instances[msg.guild.id].handleOnMessage(msg, users[msg.author.id]);
     }
   } catch(e) {
-    msg.channel.send(`Error: \`${e.message}\``);
+		try {
+			msg.reply(`Error: \`${e.message}\``);
+		} catch (e2) {
+			// Ignored
+		}
   }
 });
 
