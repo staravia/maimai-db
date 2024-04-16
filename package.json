@@ -5,6 +5,7 @@
     "@google-cloud/vision": "^4.0.1",
     "@grpc/grpc-js": "^1.9.13",
     "axios": "^1.5.0",
+    "camaro": "^6.2.3",
     "canvas": "^2.11.2",
     "discord.js": "^14.12.1",
     "dotenv": "^16.3.1",
