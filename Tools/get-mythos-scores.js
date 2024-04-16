@@ -58,9 +58,9 @@ async function getScoresFromMythos(chart) {
   return response.entries;
 }
 
-async function insertScoresIntoDb(chart, scores){
-  await db.serialize(() => {
-    scores.forEach(score => {
+async function insertScoresIntoDb(chart, scores) {
+  const promises = scores.map(score => {
+    return new Promise((resolve, reject) => {
       let hash = getHash(chart, score);
       let acc = score.score / 10000;
       let stats_uni = getRatingStats(acc, chart.const_uni);
@@ -72,18 +72,21 @@ async function insertScoresIntoDb(chart, scores){
 
       let query = `INSERT INTO mythos_scores (hash, user_id, user_name, chart_hash, ap_count, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, date_unix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(hash) DO UPDATE SET user_id = ?, user_name = ?, chart_hash = ?, ap_count = ?, accuracy = ?, rating_uni = ?, rating_unip = ?, rating_fes = ?, rating_fesp = ?, rating_bud = ?, rating_budp = ?, date_unix = ?`;
 
-      let params = [hash, score.api_id, score.user_name, chart.hash, score.total_all_perfect_plus, acc, stats_uni.rating, stats_unip.rating, stats_fes.rating, stats_fesp.rating, stats_bud.rating, stats_budp.rating, score.user_play_date, score.api_id, score.user_name, chart.hash, score.total_all_perfect_plus, acc, stats_uni.rating, stats_unip.rating, stats_fes.rating, stats_fesp.rating, stats_bud.rating, stats_budp.rating, score.user_play_date];
+      let params = [hash, score.api_id, score.user_name, chart.hash, score.total_all_perfect_plus, acc, stats_uni.rating, stats_unip.rating, stats_fes.rating, stats_fesp.rating, stats_bud.rating, stats_budp.rating, score.user_play_date,
+      score.api_id, score.user_name, chart.hash, score.total_all_perfect_plus, acc, stats_uni.rating, stats_unip.rating, stats_fes.rating, stats_fesp.rating, stats_bud.rating, stats_budp.rating, score.user_play_date];
 
-      db.run(query, params
-        , function(e) {
+      db.run(query, params, function(e) {
         if (e) {
           console.error(`[MYHOS_FETCH]: FAILED to process mythos score: ${e.message}`, e);
+          reject(e);
         } else {
-
+          resolve();
         }
       });
     });
   });
+
+  await Promise.all(promises);
 }
 
 function getHash(chart, score){
