@@ -95,7 +95,7 @@ async function updateScores(){
       ON CONFLICT(id) DO UPDATE SET alias = ?, color = ?
       `;
 
-      let params = [user.id, user.alias, user.color, user.scores_submitted, user.rating_uni, user.rating_unip, user.rating_fes, user.rating_fesp, user.rating_bud, user.rating_budp, user.count_uni, user.count_unip, user.count_fes, user.count_fesp, user.count_bud, user.count_budp, user.alias, user.color];
+      let params = [user.id, user.alias, user.color, user.scores_submitted, user.rating_uni, user.rating_unip, user.rating_fes, user.rating_fesp, user.rating_bud, 0 /* user.rating_budp */, user.count_uni, user.count_unip, user.count_fes, user.count_fesp, user.count_bud, user.count_budp, user.alias, user.color];
       console.log(`[LOAD_OLD_SCORES]: USERS: ${i+1}/${users.length} - ${user.id}`);
 
       db.run(query, params, function(e) {

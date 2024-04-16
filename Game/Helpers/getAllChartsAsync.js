@@ -2,10 +2,27 @@ const { Commands, Constants, GameVersion, LockedStatus, Regions, Locale } = requ
 const handleDbLogReply = require("./handleDbLogReply.js");
 const getDbLogString = require("./getDbLogString.js");
 
+function capitalizeFirstLetter(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function getFullWidthText(text) {
+    return text.split('').map(char => {
+        const code = char.charCodeAt(0);
+        // Convert ASCII characters to full-width
+        if (code >= 33 && code <= 126) {
+            return String.fromCharCode(code + 65248);
+        }
+        // Keep non-ASCII characters unchanged
+        return char;
+    }).join('');
+}
+
 async function getAllChartsAsync(game, msg, args, is_score = false){
 	let db = game.db;
 	let lvl_name = ``;
 	let rating_name = ``;
+	let where_conditions = ``;
 	switch (args.diff_version) {
 		case GameVersion.BUDDIES.id:
 			lvl_name = GameVersion.BUDDIES.const_label;
@@ -43,46 +60,55 @@ async function getAllChartsAsync(game, msg, args, is_score = false){
     let query = ``;
 
 		if (!is_score){
-			query = `SELECT * FROM charts WHERE (${lvl_name} >= ? AND ${lvl_name} <= ?) `;
+			query = `SELECT * FROM charts `;
+			where_conditions = `WHERE (${lvl_name} >= ? AND ${lvl_name} <= ?) `;
 		} else {
 			let scores_user_query = ``;
 			if (args.users != null && args.users.length > 0){
-				scores_user_query = `AND scores.user_id = ${args.users[0]}`;
+				args.users.forEach((user_name, i) => {
+					let full_width_name_a = getFullWidthText(user_name);
+					let full_width_name_b = getFullWidthText(capitalizeFirstLetter(user_name));
+					let full_width_name_c = getFullWidthText(user_name.toUpperCase());
+
+					scores_user_query += i == 0 ? 'AND ' : 'OR'
+					scores_user_query += ` (user_id LIKE '%${user_name}%' OR user_id LIKE '%${full_width_name_a}%' OR user_id LIKE '%${full_width_name_b}%' OR user_id LIKE '%${full_width_name_c}%')`;
+				});
 			}
 
-			query = `SELECT * FROM scores JOIN charts ON scores.chart_hash = charts.hash ${scores_user_query} WHERE (<!>${lvl_name} >= ? AND <!>${lvl_name} <= ? ${scores_user_query}) `;  //${userParams.version.rating_label} DESC`;
+			query = `SELECT scores.id, scores.hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix, charts.* FROM scores JOIN charts ON scores.chart_hash = charts.hash `;  //${userParams.version.rating_label} DESC`;
+			where_conditions = `WHERE (${lvl_name} >= ? AND ${lvl_name} <= ? ${scores_user_query}) `;
 		}
 		if (args.categories != 0){
-			query += `AND ((${args.categories} & <!>category) = <!>category) `;
+			where_conditions += `AND ((${args.categories} & category) = category) `;
 		}
 		if (args.game_version != 0 && args.search_title != undefined && args.search_title.length == 0){
 			if (args.until_version) {
-				query += `AND (<!>game_version <= ${args.game_version}) `;
+				where_conditions += `AND (game_version <= ${args.game_version}) `;
 			} else {
-				query += `AND ((${args.game_version} & <!>game_version) = <!>game_version) `;
+				where_conditions += `AND ((${args.game_version} & game_version) = game_version) `;
 			}
 		}
 		if (args.difficulties != 0){
-			query += `AND ((${args.difficulties} & <!>difficulty) = <!>difficulty) `;
+			where_conditions += `AND ((${args.difficulties} & difficulty) = difficulty) `;
 		}
 		if (args.locked_status == LockedStatus.LOCKED.id){
-			query += `AND (<!>is_locked = TRUE) `;
+			where_conditions += `AND (is_locked = TRUE) `;
 		} else if (args.locked_status == LockedStatus.UNLOCKED.id){
-			query += `AND (<!>is_locked = FALSE) `;
+			where_conditions += `AND (is_locked = FALSE) `;
 		}
 		if (args.region == Regions.CHINA.id){
-			query += `AND (<!>is_china = TRUE) `;
+			where_conditions += `AND (is_china = TRUE) `;
 		} else if (args.region == Regions.INTERNATIONAL.id){
-			query += `AND (<!>is_international = TRUE) `;
+			where_conditions += `AND (is_international = TRUE) `;
 		}
 		if (args.tags != 0 || args.tags_none){
 			if (args.tags_matching) {
-				query += `AND (${args.tags} = <!>tags)`;
+				where_conditions += `AND (${args.tags} = tags)`;
 			} else if (args.tags_only) {
 				if (args.tags_none){
-					query += `AND ((${args.tags} & <!>tags) = <!>tags)`;
+					where_conditions += `AND ((${args.tags} & tags) = tags)`;
 				} else {
-					query += `AND ((${args.tags} & <!>tags) = <!>tags) AND (<!>tags != 0)`;
+					where_conditions += `AND ((${args.tags} & tags) = tags) AND (tags != 0)`;
 				}
 			} else {
 				var tag_search = "";
@@ -90,49 +116,52 @@ async function getAllChartsAsync(game, msg, args, is_score = false){
 				args.optional_tags.forEach(tag => {
 					if (!found){
 						if (tag == 0) {
-							tag_search += `(<!>tags = 0)`;
+							tag_search += `(tags = 0)`;
 						} else {
-							tag_search += `((${tag} & <!>tags) > 0)`;
+							tag_search += `((${tag} & tags) > 0)`;
 						}
 						found = true;
 					} else {
 						if (tag == 0) {
-							tag_search += `OR (<!>tags = 0)`;
+							tag_search += `OR (tags = 0)`;
 						} else {
-							tag_search += `OR ((${tag} & <!>tags) > 0)`;
+							tag_search += `OR ((${tag} & tags) > 0)`;
 						}
 					}
 				});
-				query += `AND (${tag_search})`;
+				where_conditions += `AND (${tag_search})`;
 			}
 		}
 		if (args.dx_version != 0){
-			query += `AND ((${args.dx_version} & <!>dx_version) = <!>dx_version) `;
+			where_conditions += `AND ((${args.dx_version} & dx_version) = dx_version) `;
 		}
 
 		if (args.search_title.length > 0){
-			query += `AND (`;
+			where_conditions += `AND (`;
 				var first = true;
 			args.search_title.forEach(search => {
 				// const glob = "* " + search.split('').join('*') + "*";
 				if (first){
 					first = false;
-					query += `<!>search_title LIKE '%${search}%' COLLATE NOCASE `;
-					// query += `OR search_title GLOB '${glob}' `;
+					where_conditions += `search_title LIKE '%${search}%' COLLATE NOCASE `;
+					// where_conditions += `OR search_title GLOB '${glob}' `;
 				} else {
-					query += `OR <!>search_title LIKE '%${search}%' COLLATE NOCASE `;
-					// query += `OR search_title GLOB '${glob}' `;
+					where_conditions += `OR search_title LIKE '%${search}%' COLLATE NOCASE `;
+					// where_conditions += `OR search_title GLOB '${glob}' `;
 				}
 			});
-			query += `) `;
+			where_conditions += `) `;
 		}
 
 		if (is_score){
-			query += ` ORDER BY scores.${rating_name} DESC, scores.accuracy DESC`;
-			query = query.replaceAll(`<!>`, `charts.`);
+			let mythos_query = query;
+			mythos_query = mythos_query.replace(`SELECT scores.id, scores.hash, user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, message_url, date_unix, charts.* FROM scores`, `SELECT scores.id, scores.hash, user_name AS user_id, chart_hash, accuracy, rating_uni, rating_unip, rating_fes, rating_fesp, rating_bud, rating_budp, 'Mythos' AS message_url, date_unix, charts.* FROM mythos_scores scores `);
+			query = `WITH full_query AS (${query} UNION ${mythos_query}) SELECT * FROM full_query`;
+			query += ` ${where_conditions}`;
+			query += ` ORDER BY ${rating_name} DESC, accuracy DESC`;
 		} else {
-				query += ` ORDER BY ${lvl_name} DESC`;
-			query = query.replaceAll(`<!>`, ``);
+			query += ` ${where_conditions}`;
+			query += ` ORDER BY ${lvl_name} DESC`;
 		}
 
 		let params = [args.lvlmin, args.lvlmax];

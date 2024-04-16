@@ -24,38 +24,34 @@ async function cmdTop(game, msg, increment = 0, cache = null){
 		cache.users = userParams.users;
 		cache.user_id = msg.author.id;
 
+		if (userParams.users != null && userParams.users.length > 0){
+			cache.username = userParams.users[0];
+		}
+
 		let chartResult = await getAllChartsAsync(game, msg, cache, true);
 		if (chartResult != null && chartResult.results != undefined){
 			scores = chartResult.results;
 		}
 
 		cache.message = null;
-		let cached_users = [];
 		let results = [];
+
+		// TODO: only sanitize 20 loaded charts, NOT ALL
 		for (var i = 0; i < scores.length; i++){
 			let score = scores[i];
-			if (cached_users[score.user_id] != undefined){
-				score.user = cached_users[score.user_id];
-			} else {
-				score.user = await getUserAsync(game, score.user_id);
-				cached_users[score.user_id] = score.user;
-			}
-			score = getSanitizedChart(scores[i], cache, true);
+
+			score.user = await getUserAsync(game, score.user_id);
+			score = getSanitizedChart(score, cache, true);
 			let stats = getRatingStats(score.accuracy, score.lvl);
 			score.stats = stats;
 
+			// console.log("YO");
 			if (score.lvl > 0){
+				// console.log(score);
 				results.push(score);
 			}
 		}
 
-		for (user of userParams.users){
-			if (cached_users[user] == undefined){
-				cached_users[user] = await getUserAsync(game, user.user_id);
-			}
-		}
-
-		cache.cached_users = cached_users;
 		cache.search = chartResult;
 		cache.search.results = results;  //, chart: chartParams.chart };
 		scores = results;
@@ -87,7 +83,7 @@ async function cmdTop(game, msg, increment = 0, cache = null){
 			msgTitle = `${msgTitle} for ${cache.users.length} users 📖 ${cache.page + 1} / ${last_page + 1}`;
 		}
 
-		const renderer = await getChartRendererAsync(cache.search.selected, cache.page, cache.user_id);
+		const renderer = await getChartRendererAsync(cache.search.selected, cache.page, cache.user_id, cache.username);
 		const image = await renderer.toBuffer();
 		const attachment = new AttachmentBuilder(image, {name: 'maimai-db-render.png'});
 		const embed = new EmbedBuilder()

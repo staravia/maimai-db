@@ -1,8 +1,17 @@
 const handleSetPresence = require("./handleSetPresence.js");
 let is_discord_loading = false;
 
+function isNumber(value) {
+    return (typeof value === 'number' || typeof value === 'string') && !isNaN(value);
+}
+
 async function getUserAsync(game, user_id){
 	try {
+
+		if (!isNumber(user_id)){
+			return user_id;
+		}
+
 		if (game.cache.usernames[user_id] != undefined){
 			return game.cache.usernames[user_id];
 		}

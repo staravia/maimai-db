@@ -28,7 +28,7 @@ async function handleSyncSheetsAsync(googleClient, db, msg = null){
 
   results = await sanitizeNewCharts(googleClient, results, newCharts);
 
-  if (msg != null){
+  if (msg != null && results.inserted_charts != null && results.inserted_charts.length > 0){
     msg.reply(`Adding new charts... Total found: \`${results.inserted_charts.length}\`. Please wait...`);
   }
 
@@ -56,8 +56,9 @@ async function appendNewCharts(googleClient, results, msg = null){
   });
 
   for (let i = 0; i < results.inserted_charts.length; i ++){
-    if (msg != null && i%10 == 0 || i == results.inserted_charts.length - 1){
+    if (msg != null && (i%10 == 0 || i == results.inserted_charts.length - 1)){
       msg.reply(`Adding new charts... Progress: \`${i + 1}/${results.inserted_charts.length}\``);
+      console.log(`[SYNC]: Adding new charts... Progress: \`${i + 1}/${results.inserted_charts.length}\``);
     }
 
     const data = results.inserted_charts[i];
@@ -192,7 +193,7 @@ async function getNewCharts(url){
 
     let charts = [];
 
-    for (let i = 1320; i < response.data.songs.length; i++) { // arbitrary number after fes+
+    for (let i = 0; i < response.data.songs.length; i++) { // arbitrary number after fes+
     const song = response.data.songs[i];
 
       song.sheets.forEach((sheet) => {
