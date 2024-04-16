@@ -30,7 +30,7 @@ function getSanitizedChart(chart, args, invalidate_lvl = false){
 	chart.lvl = -1;
 	switch (args.diff_version) {
 		case GameVersion.BUDDIES.id:
-			chart.lvl = chart.const_fesp;
+			chart.lvl = chart.const_bud;
 			if (!invalidate_lvl && chart.lvl == 0){
 				chart.lvl = chart.const_budp;
 			}
