@@ -43,7 +43,7 @@ function handleInitialization(msg){
 	try {
 		client = new proto.MaimaiLeaderboard(Secrets.MYTHOS, grpc.credentials.createSsl());
 	} catch {
-		msg.reply("Error connecting to Mythos API.")
+		msg.reply("Error connecting to Mythos API.");
 		return;
 	}
 }

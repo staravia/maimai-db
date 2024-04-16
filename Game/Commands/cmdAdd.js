@@ -73,7 +73,7 @@ async function cmdAdd(game, msg){
 
 	description += `- ${chart_description}\n`;
 	description += `- Difficulty: \`${chartParams.chart.difficulty_ref.label} ${chartParams.lvl}${chartParams.chart.dx_ref.short_label}\`\n`;
-	description += `- Accuracy: \`${chartParams.accuracy.toFixed(2)}%\`  ${stats.description}`;
+	description += `- Acc: \`${chartParams.accuracy.toFixed(2)}%\`  ${stats.description}`;
 
 	const hash = Crypto.createHash('md5').update(`${msg.author.id}-${chartParams.chart.hash}`);
 	const hex = hash.digest('hex');

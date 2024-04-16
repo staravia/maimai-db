@@ -2,8 +2,11 @@ const { DxVersion, Difficulties, GameVersion, Constants } = require("./../consta
 
 function getSanitizedChart(chart, args, invalidate_lvl = false){
 	if (chart == null){
+		console.log("NULL");
 		return null;
 	}
+
+	// console.log(chart);
 
 	Object.values(Difficulties).forEach(difficulty => {
 		if (difficulty.id == chart.difficulty){

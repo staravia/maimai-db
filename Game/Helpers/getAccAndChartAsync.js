@@ -64,7 +64,7 @@ async function getAccAndChartAsync(game, msg, args = null, noAcc = false){
 			invalidDescription = `${invalidDescription}\n- Constant: \`${lvl.toFixed(1)}\``
 		}
 		if (!noAcc){
-			invalidDescription = `${invalidDescription}\n- Accuracy: \`${acc.toFixed(2)}%\``
+			invalidDescription = `${invalidDescription}\n- Acc: \`${acc.toFixed(2)}%\``
 		}
 		if (invalid && invalid != ''){
 			invalidDescription = `${invalidDescription}\n⚠️ Invalid entries: \`${invalid}\`\n`;

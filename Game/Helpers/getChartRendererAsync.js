@@ -3,6 +3,15 @@ const { Categories, DxVersion, Constants } = require("./../constants.js");
 const getGrade = require("./getGrade.js");
 const getTags = require("./getTags.js");
 
+function getCleanUsername(str){
+  str = str.normalize("NFKC").replace(/\p{Diacritic}/gu, "");
+  str = str.toLowerCase();
+  // str = str.replace(/[^a-zA-Z0-9\s\"\'\\\/,]/g, '');
+  str = str.normalize('NFC').replace(`'`, '').replace('！', '!').replace('～', '~').replace('･', '・').replace('（', '(').replace('）', ')');
+
+  return str;
+}
+
 async function getChartRendererAsync(charts, page = 0, user = -1){
 	const img_buffer = 6;
 	const img_size = 256;
@@ -139,8 +148,10 @@ async function getChartRendererAsync(charts, page = 0, user = -1){
 
 				ctx.strokeStyle = '#000000';
 				ctx.lineWidth = 4;
-				ctx.strokeText(chart.user, center_pos, text_label_pos + y + yOffset, img_size);
-				ctx.fillText(chart.user, center_pos, text_label_pos + y + yOffset, img_size);
+
+				let cleaned_username = getCleanUsername(chart.user);
+				ctx.strokeText(cleaned_username, center_pos, text_label_pos + y + yOffset, img_size);
+				ctx.fillText(cleaned_username, center_pos, text_label_pos + y + yOffset, img_size);
 
 				let grade = getGrade(chart.accuracy);
 				ctx.fillStyle = grade.color;

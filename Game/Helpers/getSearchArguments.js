@@ -2,7 +2,7 @@ const { BookingType, DxVersion, Categories, Grades, GameVersion, Difficulties, L
 const getTags = require("./getTags.js");
 
 function getSearchArguments(str, ignore_non_search = false){
-	str = str.toLowerCase();
+	// str = str.toLowerCase();
 	let input = splitStringWithQuotes(str);
 	let arguments = [];
 	var invalidStr = "";
@@ -36,56 +36,57 @@ function getSearchArguments(str, ignore_non_search = false){
 }
 
 function getSearchArgument(str, ignore_non_search){
+	let lower = str.toLowerCase();
 	str = str.normalize('NFC').replace(`'`, '').replace('！', '!').replace('～', '~').replace('･', '・').replace('（', '(').replace('）', ')');
 
 	let parameters = [];
 	if (!ignore_non_search){
-		parameters = getTags(str, Grades, ParameterType.GRADE);
+		parameters = getTags(lower, Grades, ParameterType.GRADE);
 		if (parameters.length != 0){
 			return parameters;
 		}
-		parameters = getTags(str, Regions, ParameterType.REGION);
+		parameters = getTags(lower, Regions, ParameterType.REGION);
 		if (parameters.length != 0){
 			return parameters;
 		}
-		parameters = getTags(str, Days, ParameterType.DAY);
+		parameters = getTags(lower, Days, ParameterType.DAY);
 		if (parameters.length != 0){
 			return parameters;
 		}
-		parameters = getTags(str, Months, ParameterType.MONTH);
+		parameters = getTags(lower, Months, ParameterType.MONTH);
 		if (parameters.length != 0){
 			return parameters;
 		}
-		parameters = getTags(str, BookingType, ParameterType.BOOKINGTYPE);
+		parameters = getTags(lower, BookingType, ParameterType.BOOKINGTYPE);
 		if (parameters.length != 0){
 			return parameters;
 		}
 	}
-	parameters = getTags(str, DxVersion, ParameterType.DX);
+	parameters = getTags(lower, DxVersion, ParameterType.DX);
 	if (parameters.length != 0){
 		return parameters;
 	}
-	parameters = getTags(str, Categories, ParameterType.CATEGORY);
+	parameters = getTags(lower, Categories, ParameterType.CATEGORY);
 	if (parameters.length != 0){
 		return parameters;
 	}
-	parameters = getTags(str, GameVersion, ParameterType.VERSION);
+	parameters = getTags(lower, GameVersion, ParameterType.VERSION);
 	if (parameters.length != 0){
 		return parameters;
 	}
-	parameters = getTags(str, Difficulties, ParameterType.DIFFICULTY);
+	parameters = getTags(lower, Difficulties, ParameterType.DIFFICULTY);
 	if (parameters.length != 0){
 		return parameters;
 	}
-	parameters = getTags(str, Tags, ParameterType.TAGS);
+	parameters = getTags(lower, Tags, ParameterType.TAGS);
 	if (parameters.length != 0){
 		return parameters;
 	}
-	parameters = getTags(str, LockedStatus, ParameterType.LOCKEDSTATUS);
+	parameters = getTags(lower, LockedStatus, ParameterType.LOCKEDSTATUS);
 	if (parameters.length != 0){
 		return parameters;
 	}
-	parameters = getTags(str, Locale, ParameterType.LOCALE);
+	parameters = getTags(lower, Locale, ParameterType.LOCALE);
 	if (parameters.length != 0){
 		return parameters;
 	}
@@ -104,7 +105,7 @@ function getSearchArgument(str, ignore_non_search){
 			parameters.push(new ParameterBuilder(count, ParameterType.COUNT));
 			endsX = true;
 		}
-	} else if (str.endsWith('hr') || str.endsWith('h')){
+	} else if (lower.endsWith('hr') || lower.endsWith('h')){
 		const count = parseInt(str);
 		if (count <= 0 || count > 24 || isNaN(count)) {
 			// parameters.push(new ParameterBuilder(str, ParameterType.INVALID));
@@ -112,7 +113,7 @@ function getSearchArgument(str, ignore_non_search){
 			parameters.push(new ParameterBuilder(count, ParameterType.DURATION));
 			return parameters;
 		}
-	} else if (str.endsWith('d')){
+	} else if (lower.endsWith('d')){
 		const count = parseInt(str);
 		if (count <= 0 || count > 20 || isNaN(count)) {
 			// parameters.push(new ParameterBuilder(str, ParameterType.INVALID));
@@ -120,7 +121,7 @@ function getSearchArgument(str, ignore_non_search){
 			parameters.push(new ParameterBuilder(count * 24, ParameterType.DURATION));
 			return parameters;
 		}
-	} else if (str.endsWith('am')){
+	} else if (lower.endsWith('am')){
 		let count = parseInt(str);
 		if (count < 0){
 			parameters.push(new ParameterBuilder(str, ParameterType.INVALID));
@@ -131,7 +132,7 @@ function getSearchArgument(str, ignore_non_search){
 			parameters.push(new ParameterBuilder(count, ParameterType.TIME));
 			return parameters;
 		}
-	} else if (str.endsWith('pm')){
+	} else if (lower.endsWith('pm')){
 		let count = parseInt(str);
 		if (count < 0){
 			parameters.push(new ParameterBuilder(str, ParameterType.INVALID));
@@ -142,7 +143,7 @@ function getSearchArgument(str, ignore_non_search){
 			parameters.push(new ParameterBuilder(count, ParameterType.TIME));
 			return parameters;
 		}
-	} else if (str.endsWith('%')) {
+	} else if (lower.endsWith('%')) {
 		var percent = parseFloat(str);
 		if (!percent || percent === NaN || percent < 0){
 			parameters.push(new ParameterBuilder(str, ParameterType.INVALID));
@@ -151,10 +152,10 @@ function getSearchArgument(str, ignore_non_search){
 		percent = Math.floor(percent * 1000) / 1000;
 		parameters.push(new ParameterBuilder(percent, ParameterType.PERCENT));
 	} else if (str.startsWith('<') && str.endsWith('>')){
-		if (str.indexOf('@') >= 0){
+		// if (str.indexOf('@') >= 0){
 			str = str.replace('<', '').replace('>', '').replace('@', '');
 			parameters.push(new ParameterBuilder(str, ParameterType.USERID));
-		}
+		// }
 		// Ignore for now
 		return parameters;
 	}

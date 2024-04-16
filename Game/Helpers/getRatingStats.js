@@ -8,7 +8,7 @@ function getRatingStats(acc, lvl){
 	let ranking = Math.floor(rating * 50);
 	let rankLabel = getRatingLabel(ranking);
 	let description = `Score: \`${Math.floor(rating)}\`  Rating: ${rankLabel.label}`;
-	let description_b = `Accuracy: \`${acc.toFixed(2)}%\`  Rating: ${rankLabel.label}`;
+	let description_b = `Acc: \`${acc.toFixed(2)}%\`  Rating: ${rankLabel.label}`;
 	let result = {
 		rating: rating,
 		ranking: ranking,

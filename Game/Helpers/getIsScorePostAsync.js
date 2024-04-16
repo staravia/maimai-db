@@ -79,7 +79,7 @@ async function getIsScorePostAsync(game, msg){
 		let stats_cur = getRatingStats(result.accScore, chart.lvl);
 		let embedTitle = getChartDescription(chart);
 		let message = ``;// `- New Record: \`Using highest score.\`\n`; // `- New Record: \`${msg.author.username} - ${pbMessage}\`\n`;
-		message += (`- Accuracy: \`${result.accScore}%\`\n`);
+		message += (`- Acc: \`${result.accScore}%\`\n`);
 		message += `- ${stats_cur.description}`;
 
 		const thumbnail = new AttachmentBuilder(`${Constants.ImageDirectory}${chart.image_file}`);

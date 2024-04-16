@@ -19,8 +19,8 @@ function getSearchInformation(args, isScores = false, detailedScores = false, si
 	} else {
 		description = `Selected \`${selected.length} chart${selected.length === 1 ? '' : 's'}\` out of ${totalresults} result${totalresults === 1 ? '' : 's'}`;
 	}
-	description += args.search_description;
-	description += "\n";
+	description += `${args.search_description}\n`;
+	description += `> Latest Mythos Check: \`${Constants.MythosLastChecked}\`\n`
 
 	if (!isScores){
 		for (const [i, chart] of selected.entries()) {

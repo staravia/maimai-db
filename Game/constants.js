@@ -4,7 +4,8 @@ module.exports.Constants = {
 	ImageDirectory: "img/cover/",
 	FooterMessage: "🦧power - 🐬tech - 🦑intelligence - 🐯stamina - 🐉trills - 🦝spins",
 	DefaultPageSize: 20,
-	DefaultSmallPageSize: 10
+	DefaultSmallPageSize: 10,
+	MythosLastChecked: 'Apr 15, 2024'
 }
 
 module.exports.BookingType = {

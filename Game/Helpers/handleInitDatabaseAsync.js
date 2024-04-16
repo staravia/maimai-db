@@ -49,6 +49,24 @@ async function handleInitDatabaseAsync(db) {
       FOREIGN KEY (chart_hash) REFERENCES charts(hash)
     )`;
 
+  const createMythosScoresQuery = `
+    CREATE TABLE IF NOT EXISTS mythos_scores (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      hash TEXT UNIQUE,
+      user_id TEXT,
+      user_name TEXT,
+      chart_hash TEXT,
+      ap_count INTEGER,
+      accuracy REAL,
+      rating_uni REAL,
+      rating_unip REAL,
+      rating_fes REAL,
+      rating_fesp REAL,
+      rating_bud REAL,
+      rating_budp REAL,
+      date_unix TEXT
+    )`;
+
   const createChartsQuery = `
     CREATE TABLE IF NOT EXISTS charts (
       hash TEXT UNIQUE PRIMARY KEY,
@@ -115,6 +133,17 @@ async function handleInitDatabaseAsync(db) {
           reject(err);
         } else {
           console.log('[INIT]: CHARTS database initialized!');
+        }
+
+        resolve();
+      });
+
+      db.run(createMythosScoresQuery, (err) => {
+        if (err) {
+          console.error('[INIT]: Error initializing MYTHOS_SCORES table:', err);
+          reject(err);
+        } else {
+          console.log('[INIT]: MYTHOS_SCORES database initialized!');
         }
 
         resolve();
