@@ -90,7 +90,7 @@ async function insertScoresIntoDb(chart, scores) {
 }
 
 function getHash(chart, score){
-  return `${score.api_id}-chart:${chart.id}`;
+  return `${score.api_id}-chart:${chart.hash}`;
 }
 
 function initializeMythos() {
